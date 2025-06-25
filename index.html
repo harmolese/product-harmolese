@@ -1,11 +1,99 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
-  <title>Harmolese 製品サイト</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Harmolese | 想いをカタチに、笑顔を届ける</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      background-color: #f5f5f5;
+      color: #333;
+    }
+    header {
+      background-color: #222;
+      color: white;
+      padding: 2rem;
+      text-align: center;
+    }
+    nav {
+      background-color: #444;
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      padding: 1rem;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+    }
+    main {
+      padding: 2rem;
+    }
+    section {
+      margin-bottom: 3rem;
+    }
+    .hero {
+      background-image: url('hero-placeholder.jpg');
+      background-size: cover;
+      background-position: center;
+      height: 300px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      text-shadow: 0 0 10px #000;
+      font-size: 2rem;
+    }
+    footer {
+      background-color: #222;
+      color: white;
+      text-align: center;
+      padding: 1rem;
+    }
+  </style>
 </head>
 <body>
-  <h1>ようこそ！Harmoleseへ</h1>
-  <p>当社では製品サンプルをオンラインで作成・依頼できます。</p>
+  <header>
+    <h1>Harmolese（ハルモリズ）</h1>
+    <p>想いをカタチに、笑顔を届ける</p>
+  </header>
+  <nav>
+    <a href="#about">企業理念</a>
+    <a href="#services">サービス</a>
+    <a href="#contact">お問い合わせ</a>
+  </nav>
+  <div class="hero">
+    <p>素材と想いを融合して、あなただけの一品を。</p>
+  </div>
+  <main>
+    <section id="about">
+      <h2>企業理念</h2>
+      <p>お客様の想いを第一に考え、お客様の想いやアイディアを高度な技術を持って形にする。</p>
+      <p>弊社で購入された商品を手にしたお客様、またはそれをプレゼントされた方や販売、購入された方の笑顔を大切にする。</p>
+      <h3>社名の由来</h3>
+      <p>Harmoleseは調和する意味の"Harmony"、融合の"Coalesce"を組み合わせた造語。素材と素材、人と人を繋ぐ事業を目指します。</p>
+    </section>
+    <section id="services">
+      <h2>サービス内容</h2>
+      <ul>
+        <li>レーザー彫刻・エンボス加工（金属、木材、アクリル等）</li>
+        <li>シルクスクリーン印刷（Tシャツ、バッグ、ポーチなど）</li>
+        <li>生糸の製糸技術を用いたオリジナル商品の開発</li>
+        <li>3Dスキャン・3Dプリント（模型やフィギュア造形）</li>
+        <li>相談に応じた柔軟な対応</li>
+        <li>※CNCフライス加工の導入予定</li>
+      </ul>
+    </section>
+    <section id="contact">
+      <h2>お問い合わせ</h2>
+      <p>現在、専用フォーム準備中です。ご依頼やご相談はメールまたはSNSからお気軽にどうぞ。</p>
+      <p>📧 info@harmolese.com（仮）</p>
+    </section>
+  </main>
+  <footer>
+    <p>&copy; 2025 Harmolese. All rights reserved.</p>
+  </footer>
 </body>
 </html>
