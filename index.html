@@ -17,6 +17,42 @@
       padding: 2rem;
       text-align: center;
     }
+    .drawer-toggle {
+      position: fixed;
+      top: 1rem;
+      left: 1rem;
+      background-color: #444;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      z-index: 1001;
+      cursor: pointer;
+    }
+    .drawer {
+      position: fixed;
+      top: 0;
+      left: -250px;
+      width: 250px;
+      height: 100%;
+      background-color: #333;
+      color: white;
+      padding: 2rem 1rem;
+      transition: left 0.3s ease;
+      z-index: 1000;
+    }
+    .drawer.open {
+      left: 0;
+    }
+    .drawer a {
+      display: block;
+      color: white;
+      text-decoration: none;
+      margin-bottom: 1rem;
+    }
+    .drawer a:hover {
+      text-decoration: underline;
+    }
     nav {
       background-color: #444;
       display: flex;
@@ -55,6 +91,13 @@
   </style>
 </head>
 <body>
+  <button class="drawer-toggle" onclick="toggleDrawer()">☰ メニュー</button>
+  <div class="drawer" id="drawer">
+    <a href="#about" onclick="closeDrawer()">企業理念</a>
+    <a href="#services" onclick="closeDrawer()">サービス</a>
+    <a href="form.html">お問い合わせ</a>
+  </div>
+
   <header>
     <h1>Harmolese（ハルモリズ）</h1>
     <p>想いをカタチに、笑顔を届ける</p>
@@ -70,30 +113,54 @@
   <main>
     <section id="about">
       <h2>企業理念</h2>
-      <p>お客様の想いを第一に考え、お客様の想いやアイディアを高度な技術を持って形にする。</p>
-      <p>弊社で購入された商品を手にしたお客様、またはそれをプレゼントされた方や販売、購入された方の笑顔を大切にする。</p>
+      <p>お客様の想いを第一に考え、その想いやアイディアを、高度な技術によって形にいたします。</p>
+      <p>また、弊社で製作・販売された商品を手にした方、贈られた方、あるいは購入された方すべての「笑顔」を大切にします。</p>
       <h3>社名の由来</h3>
-      <p>Harmoleseは調和する意味の"Harmony"、融合の"Coalesce"を組み合わせた造語。素材と素材、人と人を繋ぐ事業を目指します。</p>
+      <p>「Harmolese」は、調和を意味する <em>Harmony</em> と、融合を意味する <em>Coalesce</em> を掛け合わせた造語です。</p>
+      <p>異なる素材同士を融合し、調和のとれた魅力的な商品を創造する。そして、人と人を繋げ、素敵な関係性を築く――そんな想いを込めています。私たちは、ものづくりを通じて「人」「素材」「想い」のすべてが調和する事業を目指しています。</p>
+      <h3>タグライン</h3>
+      <p><strong>想いとアイディアをカタチに</strong><br>あなたのモノづくりパートナー、<strong>Harmolese（ハルモリズ）</strong></p>
     </section>
     <section id="services">
       <h2>サービス内容</h2>
       <ul>
-        <li>レーザー彫刻・エンボス加工（金属、木材、アクリル等）</li>
-        <li>シルクスクリーン印刷（Tシャツ、バッグ、ポーチなど）</li>
-        <li>生糸の製糸技術を用いたオリジナル商品の開発</li>
-        <li>3Dスキャン・3Dプリント（模型やフィギュア造形）</li>
-        <li>相談に応じた柔軟な対応</li>
-        <li>※CNCフライス加工の導入予定</li>
+        <li><strong>レーザー彫刻・エンボス加工</strong>（金属、木材、アクリルなど多様な素材に対応）</li>
+        <li><strong>シルクスクリーン印刷</strong>（Tシャツ、トートバッグ、ポーチなどへの印刷加工）※ノベルティやギフト商品に最適です。</li>
+        <li><strong>生糸の製糸技術を活かしたオリジナル商品開発</strong></li>
+        <li><strong>3Dスキャンおよび3Dプリント</strong>（模型やフィギュアなど立体造形物の制作）</li>
+        <li><strong>その他、各種ご要望に応じた柔軟な対応も可能です。</strong></li>
+        <li><em>※今後、CNCフライス加工機の導入も予定しています。</em></li>
       </ul>
     </section>
     <section id="contact">
       <h2>お問い合わせ</h2>
       <p>現在、専用フォーム準備中です。ご依頼やご相談はメールまたはSNSからお気軽にどうぞ。</p>
       <p>📧 info@harmolese.com（仮）</p>
+      <h3>依頼フォーム構成（予定）</h3>
+      <ul>
+        <li>ご依頼内容の概要</li>
+        <li>お名前・お電話番号・メールアドレス（返信用）</li>
+        <li>数量選択（登録された在庫に応じて選択可能に）</li>
+        <li>希望納期（素材や仕様により選択可能な期間を制限）</li>
+        <li>画像添付（お客様がアップロードした画像を素材上にレイアウト可能）</li>
+        <li>自由レイアウト機能（複数の素材に画像を重ねて配置できるUIを予定）</li>
+        <li>ご要望・補足事項のコメント欄</li>
+      </ul>
     </section>
   </main>
   <footer>
     <p>&copy; 2025 Harmolese. All rights reserved.</p>
   </footer>
+
+  <script>
+    function toggleDrawer() {
+      const drawer = document.getElementById('drawer');
+      drawer.classList.toggle('open');
+    }
+    function closeDrawer() {
+      const drawer = document.getElementById('drawer');
+      drawer.classList.remove('open');
+    }
+  </script>
 </body>
 </html>
