@@ -12,10 +12,18 @@
       color: #333;
     }
     header {
-      background-color: #222;
+      background-image: url('A_photograph_captures_sunlight_streaming_through_a.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-blend-mode: multiply;
+      background-color: rgba(0, 0, 0, 0.5);
+      background-size: cover;
+      background-position: center;
       color: white;
-      padding: 2rem;
+      padding: 4rem 2rem;
       text-align: center;
+      text-shadow: 0 0 10px #000;
     }
     .drawer-toggle {
       position: fixed;
@@ -88,6 +96,13 @@
       text-align: center;
       padding: 1rem;
     }
+    .fade-section {
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+    .fade-section.show {
+      opacity: 1;
+    }
   </style>
 </head>
 <body>
@@ -95,11 +110,11 @@
   <div class="drawer" id="drawer">
     <a href="#about" onclick="closeDrawer()">企業理念</a>
     <a href="#services" onclick="closeDrawer()">サービス</a>
-    <a href="form.html">お問い合わせ</a>
+    <a href="#contact" onclick="closeDrawer()">お問い合わせ</a>
   </div>
 
   <header>
-    <h1>Harmolese（ハルモリズ）</h1>
+    <h1>Harmolese -ハルモリズ- </h1>
     <p>想いをカタチに、笑顔を届ける</p>
   </header>
   <nav>
@@ -107,30 +122,39 @@
     <a href="#services">サービス</a>
     <a href="#contact">お問い合わせ</a>
   </nav>
-  <div class="hero">
-    <p>素材と想いを融合して、あなただけの一品を。</p>
-  </div>
+  <p style="text-align: center;">
+    <span style="font-size: 1.2rem; font-weight: bold;">
+      想いとアイディアをカタチに<br>
+      あなたのモノづくりパートナー、ハルモリズ
+    </span>
+  </p>
   <main>
-    <section id="about">
-      <h2>企業理念</h2>
-      <p>お客様の想いを第一に考え、その想いやアイディアを、高度な技術によって形にいたします。</p>
-      <p>また、弊社で製作・販売された商品を手にした方、贈られた方、あるいは購入された方すべての「笑顔」を大切にします。</p>
-      <h3>社名の由来</h3>
-      <p>「Harmolese」は、調和を意味する <em>Harmony</em> と、融合を意味する <em>Coalesce</em> を掛け合わせた造語です。</p>
-      <p>異なる素材同士を融合し、調和のとれた魅力的な商品を創造する。そして、人と人を繋げ、素敵な関係性を築く――そんな想いを込めています。私たちは、ものづくりを通じて「人」「素材」「想い」のすべてが調和する事業を目指しています。</p>
-      <h3>タグライン</h3>
-      <p><strong>想いとアイディアをカタチに</strong><br>あなたのモノづくりパートナー、<strong>Harmolese（ハルモリズ）</strong></p>
+    <section id="about" style="padding-left: 1.5rem;">
+      <h2 onclick="toggleSection('philosophy', this)" style="cursor: pointer;">▶ 企業理念</h2>
+      <div id="philosophy" class="fade-section" style="display: none; padding-left: 1rem;">
+        <p>お客様の想いを第一に考え、その想いやアイディアを、高度な技術によって形にいたします。</p>
+        <p>また、弊社で製作・販売された商品を手にした方、贈られた方、あるいは購入された方すべての「笑顔」を大切にします。</p>
+      </div>
     </section>
-    <section id="services">
-      <h2>サービス内容</h2>
-      <ul>
+    <section id="origin-section" style="padding-left: 1.5rem;">
+      <h2 onclick="toggleSection('origin', this)" style="cursor: pointer;">▶ 社名の由来</h2>
+      <div id="origin" class="fade-section" style="display: none; padding-left: 1rem;">
+        <p>「Harmolese」は、調和を意味する <em>Harmony</em> と、融合を意味する <em>Coalesce</em> を掛け合わせた造語です。</p>
+        <p>異なる素材同士を融合し、調和のとれた魅力的な商品を創造する。そして、人と人を繋げ、素敵な関係性を築く――そんな想いを込めています。私たちは、ものづくりを通じて「人」「素材」「想い」のすべてが調和する事業を目指しています。</p>
+      </div>
+    </section>
+    <section id="services" style="padding-left: 1.5rem;">
+      <h2 onclick="toggleSection('servicesContent', this)" style="cursor: pointer;">▶ サービス内容</h2>
+      <div id="servicesContent" class="fade-section" style="display: none; padding-left: 1rem;">
+        <ul>
         <li><strong>レーザー彫刻・エンボス加工</strong>（金属、木材、アクリルなど多様な素材に対応）</li>
         <li><strong>シルクスクリーン印刷</strong>（Tシャツ、トートバッグ、ポーチなどへの印刷加工）※ノベルティやギフト商品に最適です。</li>
         <li><strong>生糸の製糸技術を活かしたオリジナル商品開発</strong></li>
         <li><strong>3Dスキャンおよび3Dプリント</strong>（模型やフィギュアなど立体造形物の制作）</li>
         <li><strong>その他、各種ご要望に応じた柔軟な対応も可能です。</strong></li>
         <li><em>※今後、CNCフライス加工機の導入も予定しています。</em></li>
-      </ul>
+              </ul>
+      </div>
     </section>
     <section id="contact">
       <h2>お問い合わせ</h2>
@@ -160,6 +184,20 @@
     function closeDrawer() {
       const drawer = document.getElementById('drawer');
       drawer.classList.remove('open');
+    }
+    function toggleSection(id, header) {
+      const section = document.getElementById(id);
+      const isHidden = section.style.display === 'none';
+      if (isHidden) {
+        section.style.display = 'block';
+        setTimeout(() => section.classList.add('show'), 10);
+      } else {
+        section.classList.remove('show');
+        setTimeout(() => section.style.display = 'none', 300);
+      }
+      if (header) {
+        header.textContent = (isHidden ? '▼' : '▶') + ' ' + header.textContent.slice(2);
+      }
     }
   </script>
 </body>
