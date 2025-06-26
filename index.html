@@ -1,56 +1,59 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Libre+Baskerville:wght@700&display=swap" rel="stylesheet">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Harmolese | 想いをカタチに、笑顔を届ける</title>
   <style>
     body {
-      font-family: sans-serif;
+      font-family: 'Libre Baskerville', serif;
       margin: 0;
       background-color: #f5f5f5;
       color: #333;
     }
     header {
-      background-image: url('A_photograph_captures_sunlight_streaming_through_a.png');
+      background-image: url('./images/header-background.png');
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
       background-blend-mode: multiply;
       background-color: rgba(0, 0, 0, 0.5);
-      background-size: cover;
-      background-position: center;
       color: white;
       padding: 4rem 2rem;
-      text-align: center;
+      text-align: left;
       text-shadow: 0 0 10px #000;
     }
     .drawer-toggle {
       position: fixed;
       top: 1rem;
-      left: 1rem;
+      left: 0;
+      width: auto;
       background-color: #444;
       color: white;
       border: none;
-      padding: 0.5rem 1rem;
+      padding: 0.7rem 1rem;
       font-size: 1rem;
-      z-index: 1001;
+      z-index: 11;
       cursor: pointer;
+      display: inline-block;
+      text-align: left;
     }
     .drawer {
       position: fixed;
       top: 0;
-      left: -250px;
+      left: 0;
+      transform: translateX(-100%);
       width: 250px;
       height: 100%;
       background-color: #333;
       color: white;
       padding: 2rem 1rem;
-      transition: left 0.3s ease;
-      z-index: 1000;
+      transition: transform 0.4s ease;
+      z-index: 8;
     }
     .drawer.open {
-      left: 0;
+      transform: translateX(0);
     }
     .drawer a {
       display: block;
@@ -64,6 +67,7 @@
     nav {
       background-color: #444;
       display: flex;
+      flex-wrap: wrap;
       justify-content: center;
       gap: 2rem;
       padding: 1rem;
@@ -73,13 +77,17 @@
       text-decoration: none;
     }
     main {
-      padding: 2rem;
+      padding: 1rem;
+      max-width: 100%;
+      box-sizing: border-box;
     }
     section {
-      margin-bottom: 3rem;
+      padding: 0.3rem;
+      box-sizing: border-box;
+      margin-bottom: 0.8rem;
     }
     .hero {
-      background-image: url('hero-placeholder.jpg');
+      background-image: url('./images/hero-placeholder.jpg');
       background-size: cover;
       background-position: center;
       height: 300px;
@@ -98,92 +106,150 @@
     }
     .fade-section {
       opacity: 0;
-      transition: opacity 0.5s ease;
+      transform: translateY(-20px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
     }
     .fade-section.show {
       opacity: 1;
+      transform: translateY(0);
     }
-  </style>
+      .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(5px);
+      z-index: 8;
+      display: none;
+    }
+    .overlay.show {
+      display: block;
+    }
+    @media screen and (max-width: 600px) {
+      h1 {
+        text-align: center;
+      }
+      p {
+        text-align: center;
+      }
+      ul {
+        padding-left: 1rem;
+      }
+      li {
+        font-size: 0.95rem;
+        line-height: 1.4;
+      }
+      header {
+        padding: 3rem 1rem;
+      }
+      h1 span:first-child {
+        font-size: 3rem !important;
+      }
+      h1 span:last-child {
+        font-size: 0.9rem !important;
+      }
+      .drawer-toggle {
+        font-size: 0.9rem;
+        padding: 0.4rem 0.8rem;
+      }
+      nav {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 0.5rem;
+      }
+      main {
+        padding: 1rem;
+      }
+      section {
+      margin-bottom: 0.5rem;
+      }
+      .drawer {
+        width: 80%;
+      }
+    }
+</style>
 </head>
 <body>
-  <button class="drawer-toggle" onclick="toggleDrawer()">☰ メニュー</button>
-  <div class="drawer" id="drawer">
+  <div style="background-color: black; height: 2.8rem; width: 100%;"></div>
+  <div id="overlay" class="overlay"></div>
+  <button class="drawer-toggle" onclick="toggleDrawer()">☰ Menu</button>
+  <div class="drawer" id="drawer" style="padding-top: 6rem;">
     <a href="#about" onclick="closeDrawer()">企業理念</a>
     <a href="#services" onclick="closeDrawer()">サービス</a>
     <a href="#contact" onclick="closeDrawer()">お問い合わせ</a>
   </div>
 
   <header>
-    <h1>Harmolese -ハルモリズ- </h1>
-    <p>想いをカタチに、笑顔を届ける</p>
+    <h1 style="font-family: 'Libre Baskerville', serif; line-height: 1.05; letter-spacing: 0.05em; position: relative; top: 4rem; text-align: center;">
+  <span style="font-size: 4.5rem; text-transform: uppercase; letter-spacing: 0.08em; display: inline-block; border-bottom: 2px solid white; text-shadow: 0 3px 6px rgba(0, 0, 0, 0.8); padding-bottom: 0.2rem;">Harmolese</span><br style="line-height: 0.5;">
+  <span style="font-size: 1rem; font-family: 'Libre Baskerville', serif; letter-spacing: 0.1em;">- ハルモリズ -</span>
+</h1>
+    <p style="margin-top: 2rem; position: relative; top: 4rem; text-align: center;">想いとアイディアをカタチに<br>あなたのモノづくりパートナー、ハルモリズ</p>
   </header>
   <nav>
     <a href="#about">企業理念</a>
     <a href="#services">サービス</a>
     <a href="#contact">お問い合わせ</a>
   </nav>
-  <p style="text-align: center;">
-    <span style="font-size: 1.2rem; font-weight: bold;">
-      想いとアイディアをカタチに<br>
-      あなたのモノづくりパートナー、ハルモリズ
-    </span>
-  </p>
+  
   <main>
     <section id="about" style="padding-left: 1.5rem;">
-      <h2 onclick="toggleSection('philosophy', this)" style="cursor: pointer;">▶ 企業理念</h2>
-      <div id="philosophy" class="fade-section" style="display: none; padding-left: 1rem;">
+      <h2 onclick="toggleSection('philosophy', this)" style="cursor: pointer; margin-bottom: 0.1rem;">▶ 企業理念</h2>
+      <div id="philosophy" class="fade-section" style="display: none; padding-left: 1rem; margin-top: 0.2rem;">
         <p>お客様の想いを第一に考え、その想いやアイディアを、高度な技術によって形にいたします。</p>
         <p>また、弊社で製作・販売された商品を手にした方、贈られた方、あるいは購入された方すべての「笑顔」を大切にします。</p>
       </div>
     </section>
     <section id="origin-section" style="padding-left: 1.5rem;">
-      <h2 onclick="toggleSection('origin', this)" style="cursor: pointer;">▶ 社名の由来</h2>
-      <div id="origin" class="fade-section" style="display: none; padding-left: 1rem;">
+      <h2 onclick="toggleSection('origin', this)" style="cursor: pointer; margin-bottom: 0.1rem;">▶ 社名の由来</h2>
+      <div id="origin" class="fade-section" style="display: none; padding-left: 1rem; margin-top: 0.2rem;">
         <p>「Harmolese」は、調和を意味する <em>Harmony</em> と、融合を意味する <em>Coalesce</em> を掛け合わせた造語です。</p>
         <p>異なる素材同士を融合し、調和のとれた魅力的な商品を創造する。そして、人と人を繋げ、素敵な関係性を築く――そんな想いを込めています。私たちは、ものづくりを通じて「人」「素材」「想い」のすべてが調和する事業を目指しています。</p>
       </div>
     </section>
     <section id="services" style="padding-left: 1.5rem;">
-      <h2 onclick="toggleSection('servicesContent', this)" style="cursor: pointer;">▶ サービス内容</h2>
-      <div id="servicesContent" class="fade-section" style="display: none; padding-left: 1rem;">
+      <h2 onclick="toggleSection('servicesContent', this)" style="cursor: pointer; margin-bottom: 0.1rem;">▶ サービス内容</h2>
+      <div id="servicesContent" class="fade-section" style="display: none; padding-left: 1rem; margin-top: 0.2rem;">
         <ul>
-        <li><strong>レーザー彫刻・エンボス加工</strong>（金属、木材、アクリルなど多様な素材に対応）</li>
-        <li><strong>シルクスクリーン印刷</strong>（Tシャツ、トートバッグ、ポーチなどへの印刷加工）※ノベルティやギフト商品に最適です。</li>
-        <li><strong>生糸の製糸技術を活かしたオリジナル商品開発</strong></li>
-        <li><strong>3Dスキャンおよび3Dプリント</strong>（模型やフィギュアなど立体造形物の制作）</li>
-        <li><strong>その他、各種ご要望に応じた柔軟な対応も可能です。</strong></li>
-        <li><em>※今後、CNCフライス加工機の導入も予定しています。</em></li>
-              </ul>
+          <li><strong>レーザー彫刻・エンボス加工</strong>（金属、木材、アクリルなど多様な素材に対応）</li>
+          <li><strong>シルクスクリーン印刷</strong>（Tシャツ、トートバッグ、ポーチなどへの印刷加工）※ノベルティやギフト商品に最適です。</li>
+          <li><strong>生糸の製糸技術を活かしたオリジナル商品開発</strong></li>
+          <li><strong>3Dスキャンおよび3Dプリント</strong>（模型やフィギュアなど立体造形物の制作）</li>
+          <li><strong>その他、各種ご要望に応じた柔軟な対応も可能です。</strong></li>
+          <li><em>※今後、CNCフライス加工機の導入も予定しています。</em></li>
+        </ul>
       </div>
     </section>
-    <section id="contact">
+    <section id="contact" style="padding-left: 1.5rem;">
       <h2>お問い合わせ</h2>
-      <p>現在、専用フォーム準備中です。ご依頼やご相談はメールまたはSNSからお気軽にどうぞ。</p>
-      <p>📧 info@harmolese.com（仮）</p>
-      <h3>依頼フォーム構成（予定）</h3>
-      <ul>
-        <li>ご依頼内容の概要</li>
-        <li>お名前・お電話番号・メールアドレス（返信用）</li>
-        <li>数量選択（登録された在庫に応じて選択可能に）</li>
-        <li>希望納期（素材や仕様により選択可能な期間を制限）</li>
-        <li>画像添付（お客様がアップロードした画像を素材上にレイアウト可能）</li>
-        <li>自由レイアウト機能（複数の素材に画像を重ねて配置できるUIを予定）</li>
-        <li>ご要望・補足事項のコメント欄</li>
-      </ul>
+      
     </section>
   </main>
-  <footer>
+  <footer style="font-size: 0.9rem;">
     <p>&copy; 2025 Harmolese. All rights reserved.</p>
   </footer>
 
   <script>
+    const toggleButton = document.querySelector('.drawer-toggle');
     function toggleDrawer() {
       const drawer = document.getElementById('drawer');
+      const overlay = document.getElementById('overlay');
       drawer.classList.toggle('open');
+      overlay.classList.toggle('show');
+      if (drawer.classList.contains('open')) {
+        toggleButton.textContent = '☰ Back';
+      } else {
+        toggleButton.textContent = '☰ Menu';
+      }
     }
     function closeDrawer() {
       const drawer = document.getElementById('drawer');
+      const overlay = document.getElementById('overlay');
       drawer.classList.remove('open');
+      overlay.classList.remove('show');
+      toggleButton.textContent = '☰ Menu';
     }
     function toggleSection(id, header) {
       const section = document.getElementById(id);
@@ -193,7 +259,10 @@
         setTimeout(() => section.classList.add('show'), 10);
       } else {
         section.classList.remove('show');
-        setTimeout(() => section.style.display = 'none', 300);
+        setTimeout(() => {
+        section.style.display = 'none';
+        section.style.transform = 'translateY(20px)';
+      }, 800);
       }
       if (header) {
         header.textContent = (isHidden ? '▼' : '▶') + ' ' + header.textContent.slice(2);
