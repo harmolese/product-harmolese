@@ -53,7 +53,6 @@
       align-items: center;
       height: 100%;
       width: auto;
-      /* 親がflexセンタリングなのでこれでOK */
       transition: transform 0.6s cubic-bezier(.77,0,.18,1);
     }
     .carousel-thumb {
@@ -193,6 +192,7 @@
         img.addEventListener('click', (e) => {
           e.stopPropagation();
           selectedIdx = imgIdx;
+          centerIdx = imgIdx; // ←★クリックされた画像がセンターになる！
           autoSlide = false;
           renderCarousel();
         });
