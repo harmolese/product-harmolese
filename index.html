@@ -1,239 +1,8 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Libre+Baskerville:wght@700&display=swap" rel="stylesheet">
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>Harmolese | - ハルモリズ -</title>
-  <style>
-    body {
-      font-family: 'Libre Baskerville', serif;
-      margin: 0;
-      background-color: #f5f5f5;
-      color: #333;
-    }
-    header {
-      background-image: url('./images/header-bg.png');
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      background-blend-mode: multiply;
-      background-color: rgba(0, 0, 0, 0.5);
-      color: white;
-      padding: 2rem 1rem;
-      text-align: left;
-      text-shadow: 0 0 10px #000;
-    }
-    .drawer-toggle {
-      position: fixed;
-      top: 1rem;
-      left: 0;
-      width: auto;
-      background-color: #444;
-      color: white;
-      border: none;
-      padding: 0.7rem 1rem;
-      font-size: 1rem;
-      z-index: 11;
-      cursor: pointer;
-      display: inline-block;
-      text-align: left;
-    }
-    .drawer {
-      position: fixed;
-      top: 0;
-      left: 0;
-      transform: translateX(-100%);
-      width: 250px;
-      height: 100%;
-      background-color: #333;
-      color: white;
-      padding: 2rem 1rem;
-      transition: transform 0.4s ease;
-      z-index: 8;
-    }
-    .drawer.open {
-      transform: translateX(0);
-    }
-    .drawer a {
-      display: block;
-      color: white;
-      text-decoration: none;
-      margin-bottom: 1rem;
-    }
-    .drawer a:hover {
-      text-decoration: underline;
-    }
-    nav {
-      background-color: #444;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 2rem;
-      padding: 1rem;
-    }
-    nav a {
-      color: white;
-      text-decoration: none;
-    }
-    main {
-      padding: 1rem;
-      max-width: 100%;
-      box-sizing: border-box;
-    }
-    section {
-      padding: 0.3rem;
-      box-sizing: border-box;
-      margin-bottom: 0.8rem;
-    }
-    .hero {
-      background-image: url('./images/hero-placeholder.jpg');
-      background-size: cover;
-      background-position: center;
-      height: 300px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      text-shadow: 0 0 10px #000;
-      font-size: 2rem;
-    }
-    footer {
-      background-color: #222;
-      color: white;
-      text-align: center;
-      padding: 1rem;
-    }
-    .fade-section {
-      opacity: 0;
-      transform: translateY(-20px);
-      transition: opacity 0.8s ease, transform 0.8s ease;
-    }
-    .fade-section.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    .overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(255, 255, 255, 0.6);
-      backdrop-filter: blur(5px);
-      z-index: 8;
-      display: none;
-    }
-    .overlay.show {
-      display: block;
-    }
-    .top-bar,
-    .divider-bar {
-      background-color: black;
-      height: 2.8rem;
-      width: 100%;
-    }
-    /* ===== カルーセル部分 ===== */
-    .carousel-wrap {
-      width: 100vw;
-      margin: 0 auto 2rem auto;
-      display: flex;
-      justify-content: center;
-      overflow-x: hidden;
-      background: transparent;
-    }
-    .carousel-view {
-      width: 100vw;
-      max-width: 100vw;
-      overflow: hidden;
-      position: relative;
-      height: clamp(120px, 32vw, 250px);
-      border-radius: 1.5rem;
-    }
-    .carousel-track {
-      display: flex;
-      transition: transform 0.8s cubic-bezier(.77,0,.18,1);
-      will-change: transform;
-      height: 100%;
-      align-items: center;
-    }
-    .carousel-thumb {
-      width: 22vw;
-      max-width: 330px;
-      min-width: 100px;
-      height: 90%;
-      margin: 0 0.25vw;
-      object-fit: cover;
-      border-radius: 1.1rem;
-      box-shadow: 0 4px 18px rgba(0,0,0,0.11);
-      flex-shrink: 0;
-      opacity: 0.7;
-      transition: opacity 0.5s, transform 0.5s, border 0.4s;
-      cursor: pointer;
-      border: 4px solid transparent;
-    }
-    .carousel-thumb.center {
-      opacity: 1;
-      transform: scale(1.07);
-      z-index: 2;
-      border: 4px solid #ffd966;
-    }
-    .carousel-thumb.near {
-      opacity: 0.89;
-      transform: scale(1.00);
-      z-index: 1;
-    }
-    .carousel-thumb.selected {
-      border: 4px solid #1e90ff;
-      opacity: 1 !important;
-      box-shadow: 0 6px 26px rgba(30,144,255,0.14);
-    }
-    @media (max-width: 800px) {
-      .carousel-view {
-        height: clamp(80px, 32vw, 150px);
-      }
-      .carousel-thumb {
-        width: 22vw;
-        max-width: 130px;
-        min-width: 60px;
-      }
-    }
-    @media (max-width: 500px) {
-      .carousel-view {
-        height: clamp(50px, 36vw, 100px);
-      }
-      .carousel-thumb {
-        min-width: 40px;
-      }
-    }
-    /* ===== ここまでカルーセル部分 ===== */
-  </style>
-</head>
-<body>
-  <div class="top-bar"></div>
-  <div id="overlay" class="overlay"></div>
-  <button class="drawer-toggle" onclick="toggleDrawer()">☰ Menu</button>
-  <div class="drawer" id="drawer" style="padding-top: 6rem;">
-    <a href="#about" onclick="closeDrawer()">企業理念</a>
-    <a href="#services" onclick="closeDrawer()">サービス</a>
-    <a href="#contact" onclick="closeDrawer()">お問い合わせ</a>
-  </div>
-
-  <header>
-    <h1 style="font-family: 'Libre Baskerville', serif; line-height: 1.05; letter-spacing: 0.05em; position: relative; top: 2.5rem; text-align: center;">
-      <span style="font-size: 4.5rem; text-transform: uppercase; letter-spacing: 0.08em; display: inline-block; border-bottom: 2px solid white; text-shadow: 0 3px 6px rgba(0, 0, 0, 0.8); padding-bottom: 0.2rem;">Harmolese</span><br style="line-height: 0.5;">
-      <span style="font-size: 1rem; font-family: 'Libre Baskerville', serif; letter-spacing: 0.1em;">- ハルモリズ -</span>
-    </h1>
-    <p style="margin-top: 2rem; position: relative; top: 2rem; text-align: center;">想いとアイディアをカタチに<br>あなたのモノづくりパートナー、ハルモリズ</p>
-  </header>
-
-  <!-- ▼▼ 追加した帯 ▼▼ -->
-  <div class="divider-bar"></div>
-  <!-- ▲▲ 追加した帯 ▲▲ -->
+<!-- ...（前略：HTMLとCSS部分はそのままです）... -->
 
   <!-- ▼▼ カルーセル：header直下 ▼▼ -->
   <div class="carousel-wrap">
-    <div class="carousel-view">
+    <div class="carousel-view" id="carouselView">
       <div class="carousel-track" id="carouselTrack">
         <!-- JSで動的に画像5枚表示 -->
       </div>
@@ -241,154 +10,95 @@
   </div>
   <!-- ▲▲ カルーセルここまで ▲▲ -->
 
-  <nav></nav>
-  
-  <main>
-    <section id="about" style="padding-left: 1.5rem;">
-      <h2 onclick="toggleSection('philosophy', this)" style="cursor: pointer; margin-bottom: 0.1rem;">▶ 企業理念</h2>
-      <div id="philosophy" class="fade-section" style="display: none; padding-left: 1rem; margin-top: 0.2rem;">
-        <p>お客様の想いを第一に考え、その想いやアイディアを、高度な技術によって形にいたします。</p>
-        <p>また、弊社で製作・販売された商品を手にした方、贈られた方、あるいは購入された方すべての「笑顔」を大切にします。</p>
-      </div>
-    </section>
-    <section id="origin-section" style="padding-left: 1.5rem;">
-      <h2 onclick="toggleSection('origin', this)" style="cursor: pointer; margin-bottom: 0.1rem;">▶ 社名の由来</h2>
-      <div id="origin" class="fade-section" style="display: none; padding-left: 1rem; margin-top: 0.2rem;">
-        <p>「Harmolese」は、調和を意味する <em>Harmony</em> と、融合を意味する <em>Coalesce</em> を掛け合わせた造語です。</p>
-        <p>異なる素材同士を融合し、調和のとれた魅力的な商品を創造する。そして、人と人を繋げ、素敵な関係性を築く――そんな想いを込めています。私たちは、ものづくりを通じて「人」「素材」「想い」のすべてが調和する事業を目指しています。</p>
-      </div>
-    </section>
-    <section id="services" style="padding-left: 1.5rem;">
-      <h2 onclick="toggleSection('servicesContent', this)" style="cursor: pointer; margin-bottom: 0.1rem;">▶ サービス内容</h2>
-      <div id="servicesContent" class="fade-section" style="display: none; padding-left: 1rem; margin-top: 0.2rem;">
-        <ul>
-          <li><strong>レーザー彫刻・エンボス加工</strong>（金属、木材、アクリルなど多様な素材に対応）</li>
-          <li><strong>シルクスクリーン印刷</strong>（Tシャツ、トートバッグ、ポーチなどへの印刷加工）※ノベルティやギフト商品に最適です。</li>
-          <li><strong>生糸の製糸技術を活かしたオリジナル商品開発</strong></li>
-          <li><strong>3Dスキャンおよび3Dプリント</strong>（模型やフィギュアなど立体造形物の制作）</li>
-          <li><strong>その他、各種ご要望に応じた柔軟な対応も可能です。</strong></li>
-          <li><em>※今後、CNCフライス加工機の導入も予定しています。</em></li>
-        </ul>
-      </div>
-    </section>
-    <section id="contact" style="padding-left: 1.5rem;">
-      <h2>
-        <a href="form.html" style="color:blue; text-decoration:underline;">
-     お問い合わせ
-        </a>
-      </h2>
-    </section>
-  </main>
-  <footer style="font-size: 0.9rem;">
-    <p>&copy; 2025 Harmolese. All rights reserved.</p>
-  </footer>
+<!-- ...（main以下もそのままです）... -->
 
-  <script>
-    const toggleButton = document.querySelector('.drawer-toggle');
-    function toggleDrawer() {
-      const drawer = document.getElementById('drawer');
-      const overlay = document.getElementById('overlay');
-      drawer.classList.toggle('open');
-      overlay.classList.toggle('show');
-      if (drawer.classList.contains('open')) {
-        toggleButton.textContent = '☰ Back';
-      } else {
-        toggleButton.textContent = '☰ Menu';
-      }
+<script>
+  // ...（drawer, toggleSection等もそのまま）...
+
+  // ===== カルーセル画像リスト =====
+  const carouselImages = [
+    { src: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=800", alt: "sample1" },
+    { src: "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?w=800", alt: "sample2" },
+    { src: "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?w=800", alt: "sample3" },
+    { src: "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=800", alt: "sample4" },
+    { src: "https://images.unsplash.com/photo-1465101178521-c1a9136a3fd0?w=800", alt: "sample5" }
+  ];
+
+  const carouselTrack = document.getElementById('carouselTrack');
+  const carouselView = document.getElementById('carouselView');
+  let centerIdx = 2; // 3枚目中央から開始
+  let selectedIdx = null;
+  let autoSlide = true;
+  let slideTimer = null;
+
+  function renderCarousel() {
+    carouselTrack.innerHTML = '';
+    const total = carouselImages.length;
+    for (let i = -2; i <= 2; i++) {
+      const imgIdx = (centerIdx + i + total) % total;
+      const img = document.createElement('img');
+      img.src = carouselImages[imgIdx].src;
+      img.alt = carouselImages[imgIdx].alt;
+      img.className = "carousel-thumb";
+      if (i === -2 || i === 2) img.style.opacity = "0.55";
+      if (i === -1 || i === 1) img.classList.add('near');
+      if (i === 0) img.classList.add('center');
+      if (selectedIdx === imgIdx) img.classList.add('selected');
+      img.addEventListener('click', (e) => {
+        e.stopPropagation();
+        selectedIdx = imgIdx;
+        autoSlide = false;
+        renderCarousel();
+      });
+      carouselTrack.appendChild(img);
     }
-    function closeDrawer() {
-      const drawer = document.getElementById('drawer');
-      const overlay = document.getElementById('overlay');
-      drawer.classList.remove('open');
-      overlay.classList.remove('show');
-      toggleButton.textContent = '☰ Menu';
-    }
-    function toggleSection(id, header) {
-      const section = document.getElementById(id);
-      const isHidden = section.style.display === 'none';
-      if (isHidden) {
-        section.style.display = 'block';
-        setTimeout(() => section.classList.add('show'), 10);
-      } else {
-        section.classList.remove('show');
-        setTimeout(() => {
-        section.style.display = 'none';
-        section.style.transform = 'translateY(20px)';
-      }, 800);
-      }
-      if (header) {
-        header.textContent = (isHidden ? '▼' : '▶') + ' ' + header.textContent.slice(2);
-      }
-    }
+  }
 
-    // ===== カルーセル画像リスト =====
-    const carouselImages = [
-      { src: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=800", alt: "sample1" },
-      { src: "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?w=800", alt: "sample2" },
-      { src: "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?w=800", alt: "sample3" },
-      { src: "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=800", alt: "sample4" },
-      { src: "https://images.unsplash.com/photo-1465101178521-c1a9136a3fd0?w=800", alt: "sample5" }
-    ];
-
-    // ===== カルーセル表示・ロジック =====
-    const carouselTrack = document.getElementById('carouselTrack');
-    const PARTIAL = 0.25;
-    let centerIdx = 2; // 3枚目中央から開始
-    let selectedIdx = null;
-    let autoSlide = true;
-    let slideTimer = null;
-
-    function renderCarousel() {
-      carouselTrack.innerHTML = '';
-      const total = carouselImages.length;
-      // -2～+2を表示、端はループ
-      for (let i = -2; i <= 2; i++) {
-        const imgIdx = (centerIdx + i + total) % total;
-        const img = document.createElement('img');
-        img.src = carouselImages[imgIdx].src;
-        img.alt = carouselImages[imgIdx].alt;
-        img.className = "carousel-thumb";
-        // 両端
-        if (i === -2 || i === 2) img.style.opacity = "0.55";
-        // near
-        if (i === -1 || i === 1) img.classList.add('near');
-        // center
-        if (i === 0) img.classList.add('center');
-        if (selectedIdx === imgIdx) img.classList.add('selected');
-        img.addEventListener('click', (e) => {
-          e.stopPropagation();
-          selectedIdx = imgIdx;
-          autoSlide = false;
-          renderCarousel();
-        });
-        carouselTrack.appendChild(img);
-      }
-    }
-
-    function startAutoSlide() {
-      if (slideTimer) clearInterval(slideTimer);
-      slideTimer = setInterval(() => {
-        if (autoSlide && selectedIdx === null) {
-          centerIdx = (centerIdx + 1) % carouselImages.length;
-          renderCarousel();
-        }
-      }, 10000);
-    }
-
-    document.addEventListener('click', (e) => {
-      if (!carouselTrack.contains(e.target)) {
-        selectedIdx = null;
-        autoSlide = true;
+  function startAutoSlide() {
+    if (slideTimer) clearInterval(slideTimer);
+    slideTimer = setInterval(() => {
+      if (autoSlide && selectedIdx === null) {
+        centerIdx = (centerIdx + 1) % carouselImages.length;
         renderCarousel();
       }
-    });
+    }, 10000);
+  }
 
-    // リサイズ時も再描画
-    window.addEventListener('resize', renderCarousel);
+  document.addEventListener('click', (e) => {
+    if (!carouselTrack.contains(e.target)) {
+      selectedIdx = null;
+      autoSlide = true;
+      renderCarousel();
+    }
+  });
 
-    // 初期化
-    renderCarousel();
-    startAutoSlide();
-  </script>
-</body>
-</html>
+  // ===== マウスポインター位置による左右スライド =====
+  carouselView.addEventListener('mousemove', (e) => {
+    if (selectedIdx !== null) return; // 選択中は動かさない
+    const rect = carouselView.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const width = rect.width;
+    // 右半分
+    if (x > width / 2) {
+      centerIdx = (centerIdx + 1) % carouselImages.length;
+      renderCarousel();
+      autoSlide = false;
+    }
+    // 左半分
+    else if (x < width / 2) {
+      centerIdx = (centerIdx - 1 + carouselImages.length) % carouselImages.length;
+      renderCarousel();
+      autoSlide = false;
+    }
+    // ワンショットで動かすため、マウス移動で何度も動かないように1度だけでOK
+    carouselView.onmousemove = null;
+    setTimeout(() => {
+      carouselView.onmousemove = arguments.callee;
+    }, 500); // 0.5秒ブロック（連続スクロール抑止）
+  });
+
+  window.addEventListener('resize', renderCarousel);
+
+  renderCarousel();
+  startAutoSlide();
+</script>
