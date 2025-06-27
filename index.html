@@ -127,14 +127,12 @@
     .overlay.show {
       display: block;
     }
-
     .top-bar,
     .divider-bar {
       background-color: black;
       height: 2.8rem;
       width: 100%;
     }
-
     /* ===== カルーセル部分 ===== */
     .carousel-wrap {
       width: 100vw;
@@ -157,6 +155,7 @@
       transition: transform 0.8s cubic-bezier(.77,0,.18,1);
       will-change: transform;
       height: 100%;
+      align-items: center;
     }
     .carousel-thumb {
       width: 22vw;
@@ -236,7 +235,7 @@
   <div class="carousel-wrap">
     <div class="carousel-view">
       <div class="carousel-track" id="carouselTrack">
-        <!-- 中身はJSで自動生成 -->
+        <!-- JSで動的に画像5枚表示 -->
       </div>
     </div>
   </div>
@@ -322,7 +321,7 @@
       }
     }
 
-    // ===== カルーセルサンプル画像リスト（URLを信頼性あるものに修正済み） =====
+    // ===== カルーセル画像リスト =====
     const carouselImages = [
       { src: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=800", alt: "sample1" },
       { src: "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?w=800", alt: "sample2" },
@@ -331,18 +330,18 @@
       { src: "https://images.unsplash.com/photo-1465101178521-c1a9136a3fd0?w=800", alt: "sample5" }
     ];
 
-    // ===== カルーセル描画・ロジック =====
+    // ===== カルーセル表示・ロジック =====
     const carouselTrack = document.getElementById('carouselTrack');
-    const PARTIAL = 0.25; // 両端4分の1だけ見せる
-    let centerIdx = 2; // 最初は中央=3番目(0スタート)
+    const PARTIAL = 0.25;
+    let centerIdx = 2; // 3枚目中央から開始
     let selectedIdx = null;
     let autoSlide = true;
     let slideTimer = null;
 
     function renderCarousel() {
-      // 5枚表示。中央から-2～+2を並べる（端はループで）
       carouselTrack.innerHTML = '';
       const total = carouselImages.length;
+      // -2～+2を表示、端はループ
       for (let i = -2; i <= 2; i++) {
         const imgIdx = (centerIdx + i + total) % total;
         const img = document.createElement('img');
@@ -364,7 +363,6 @@
         });
         carouselTrack.appendChild(img);
       }
-      // レイアウト調整：transformで中央を表示（不要：5枚常に並べる）
     }
 
     function startAutoSlide() {
@@ -380,3 +378,17 @@
     document.addEventListener('click', (e) => {
       if (!carouselTrack.contains(e.target)) {
         selectedIdx = null;
+        autoSlide = true;
+        renderCarousel();
+      }
+    });
+
+    // リサイズ時も再描画
+    window.addEventListener('resize', renderCarousel);
+
+    // 初期化
+    renderCarousel();
+    startAutoSlide();
+  </script>
+</body>
+</html>
