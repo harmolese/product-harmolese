@@ -29,6 +29,62 @@
       height: 2.8rem;
       width: 100%;
     }
+    .drawer-toggle {
+      position: fixed;
+      top: 1rem;
+      left: 0;
+      width: auto;
+      background-color: #444;
+      color: white;
+      border: none;
+      padding: 0.7rem 1rem;
+      font-size: 1rem;
+      z-index: 21;
+      cursor: pointer;
+      display: inline-block;
+      text-align: left;
+      border-radius: 0 1.5rem 1.5rem 0;
+    }
+    .drawer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      transform: translateX(-100%);
+      width: 250px;
+      height: 100%;
+      background-color: #333;
+      color: white;
+      padding: 2rem 1rem;
+      transition: transform 0.4s cubic-bezier(.77,0,.18,1);
+      z-index: 30;
+      box-shadow: 4px 0 20px rgba(0,0,0,0.18);
+    }
+    .drawer.open {
+      transform: translateX(0);
+    }
+    .drawer a {
+      display: block;
+      color: white;
+      text-decoration: none;
+      margin-bottom: 1.3rem;
+      font-size: 1.15rem;
+    }
+    .drawer a:hover {
+      text-decoration: underline;
+    }
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(50, 50, 50, 0.32);
+      z-index: 25;
+      display: none;
+    }
+    .overlay.show {
+      display: block;
+    }
     /* ===== カルーセル部分 ===== */
     .carousel-wrap {
       width: 100vw;
@@ -111,11 +167,17 @@
         min-width: 40px;
       }
     }
-    /* ===== ここまでカルーセル部分 ===== */
   </style>
 </head>
 <body>
   <div class="top-bar"></div>
+  <div id="overlay" class="overlay"></div>
+  <button class="drawer-toggle" id="drawerToggle" onclick="toggleDrawer()">☰ Menu</button>
+  <div class="drawer" id="drawer">
+    <a href="#about" onclick="closeDrawer()">企業理念</a>
+    <a href="#services" onclick="closeDrawer()">サービス</a>
+    <a href="#contact" onclick="closeDrawer()">お問い合わせ</a>
+  </div>
   <header>
     <h1 style="font-family: 'Libre Baskerville', serif; line-height: 1.05; letter-spacing: 0.05em; position: relative; top: 2.5rem; text-align: center;">
       <span style="font-size: 4.5rem; text-transform: uppercase; letter-spacing: 0.08em; display: inline-block; border-bottom: 2px solid white; text-shadow: 0 3px 6px rgba(0, 0, 0, 0.8); padding-bottom: 0.2rem;">Harmolese</span><br>
@@ -161,7 +223,23 @@
     <p>&copy; 2025 Harmolese. All rights reserved.</p>
   </footer>
   <script>
-    // ===== カルーセル画像リスト =====
+    // --- ドロワー ---
+    const toggleButton = document.getElementById('drawerToggle');
+    const drawer = document.getElementById('drawer');
+    const overlay = document.getElementById('overlay');
+    function toggleDrawer() {
+      drawer.classList.toggle('open');
+      overlay.classList.toggle('show');
+      toggleButton.textContent = drawer.classList.contains('open') ? '☰ Close' : '☰ Menu';
+    }
+    function closeDrawer() {
+      drawer.classList.remove('open');
+      overlay.classList.remove('show');
+      toggleButton.textContent = '☰ Menu';
+    }
+    overlay.addEventListener('click', closeDrawer);
+
+    // --- カルーセル ---
     const carouselImages = [
       { src: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=800", alt: "sample1" },
       { src: "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?w=800", alt: "sample2" },
@@ -192,7 +270,7 @@
         img.addEventListener('click', (e) => {
           e.stopPropagation();
           selectedIdx = imgIdx;
-          centerIdx = imgIdx; // ←★クリックされた画像がセンターになる！
+          centerIdx = imgIdx; // クリック画像を中央へ
           autoSlide = false;
           renderCarousel();
         });
@@ -209,6 +287,12 @@
       }, 10000);
     }
     document.addEventListener('click', (e) => {
+      // ドロワー開閉優先
+      if (drawer.classList.contains('open') && !drawer.contains(e.target) && e.target !== toggleButton) {
+        closeDrawer();
+        return;
+      }
+      // カルーセル選択解除
       if (!carouselTrack.contains(e.target)) {
         selectedIdx = null;
         autoSlide = true;
