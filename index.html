@@ -113,7 +113,7 @@
       opacity: 1;
       transform: translateY(0);
     }
-      .overlay {
+    .overlay {
       position: fixed;
       top: 0;
       left: 0;
@@ -127,6 +127,56 @@
     .overlay.show {
       display: block;
     }
+
+    /* ===== カルーセル追加部分 ===== */
+    .carousel-wrap {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      background: transparent;
+      margin-bottom: 2rem;
+    }
+    .carousel-view {
+      width: 660px;
+      max-width: 95vw;
+      overflow: hidden;
+      position: relative;
+      height: 180px;
+      border-radius: 1.5rem;
+    }
+    .carousel-track {
+      display: flex;
+      transition: transform 0.8s cubic-bezier(.77,0,.18,1);
+      will-change: transform;
+      height: 180px;
+    }
+    .carousel-thumb {
+      width: 200px;
+      height: 150px;
+      margin: 0 0.5rem;
+      object-fit: cover;
+      border-radius: 1.1rem;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.11);
+      flex-shrink: 0;
+      opacity: 0.75;
+      transition: opacity 0.5s, transform 0.5s;
+    }
+    .carousel-thumb.center {
+      opacity: 1;
+      transform: scale(1.05);
+      z-index: 1;
+      box-shadow: 0 6px 22px rgba(0,0,0,0.18);
+    }
+    .carousel-thumb.near {
+      opacity: 0.89;
+      transform: scale(1.00);
+    }
+    @media (max-width: 900px) {
+      .carousel-view { width: 95vw; }
+      .carousel-thumb { width: 150px; }
+    }
+    /* ===== ここまでカルーセル追加 ===== */
+
     @media screen and (max-width: 600px) {
       h1 {
         text-align: center;
@@ -163,13 +213,23 @@
         padding: 1rem;
       }
       section {
-      margin-bottom: 0.5rem;
+        margin-bottom: 0.5rem;
       }
       .drawer {
         width: 80%;
       }
+      .carousel-view {
+        width: 100vw;
+        min-width: 0;
+        height: 130px;
+      }
+      .carousel-thumb {
+        width: 85px;
+        height: 85px;
+        margin: 0 0.2rem;
+      }
     }
-</style>
+  </style>
 </head>
 <body>
   <div style="background-color: black; height: 2.8rem; width: 100%;"></div>
@@ -183,11 +243,26 @@
 
   <header>
     <h1 style="font-family: 'Libre Baskerville', serif; line-height: 1.05; letter-spacing: 0.05em; position: relative; top: 2.5rem; text-align: center;">
-  <span style="font-size: 4.5rem; text-transform: uppercase; letter-spacing: 0.08em; display: inline-block; border-bottom: 2px solid white; text-shadow: 0 3px 6px rgba(0, 0, 0, 0.8); padding-bottom: 0.2rem;">Harmolese</span><br style="line-height: 0.5;">
-  <span style="font-size: 1rem; font-family: 'Libre Baskerville', serif; letter-spacing: 0.1em;">- ハルモリズ -</span>
-</h1>
+      <span style="font-size: 4.5rem; text-transform: uppercase; letter-spacing: 0.08em; display: inline-block; border-bottom: 2px solid white; text-shadow: 0 3px 6px rgba(0, 0, 0, 0.8); padding-bottom: 0.2rem;">Harmolese</span><br style="line-height: 0.5;">
+      <span style="font-size: 1rem; font-family: 'Libre Baskerville', serif; letter-spacing: 0.1em;">- ハルモリズ -</span>
+    </h1>
     <p style="margin-top: 2rem; position: relative; top: 2rem; text-align: center;">想いとアイディアをカタチに<br>あなたのモノづくりパートナー、ハルモリズ</p>
   </header>
+
+  <!-- ▼▼ カルーセル追加：header直下 ▼▼ -->
+  <div class="carousel-wrap">
+    <div class="carousel-view">
+      <div class="carousel-track" id="carouselTrack">
+        <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=600" class="carousel-thumb" alt="sample1">
+        <img src="https://images.unsplash.com/photo-1519125323398-675f0ddb6308?w=600" class="carousel-thumb" alt="sample2">
+        <img src="https://images.unsplash.com/photo-1465101046530-73398c7f28ca?w=600" class="carousel-thumb" alt="sample3">
+        <img src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=600" class="carousel-thumb" alt="sample4">
+        <img src="https://images.unsplash.com/photo-1465101178521-c1a9136a3fd0?w=600" class="carousel-thumb" alt="sample5">
+      </div>
+    </div>
+  </div>
+  <!-- ▲▲ ここまでカルーセル追加 ▲▲ -->
+
   <nav>
   </nav>
   
@@ -269,6 +344,37 @@
         header.textContent = (isHidden ? '▼' : '▶') + ' ' + header.textContent.slice(2);
       }
     }
+
+    // === カルーセルスクリプト追加 ===
+    const carouselTrack = document.getElementById('carouselTrack');
+    const thumbs = Array.from(carouselTrack.children);
+    const VISIBLE = 3;
+    const PARTIAL = 0.25; // 両端が4分の1だけ見える
+
+    let startIdx = 0;
+    function updateCarousel() {
+      // 幅計算
+      const thumbW = thumbs[0].offsetWidth + 16;
+      // 中央の3つ（+両端の0.25枚ずつ）だけ表示されるよう移動
+      // 中央3枚分＋両端0.25分だけ映すために、左端を-((1-PARTIAL)*thumbW)だけずらす
+      const offset = (startIdx * thumbW) - (thumbW * (1 - PARTIAL));
+      carouselTrack.style.transform = `translateX(${-offset}px)`;
+      // 中央画像にクラス
+      thumbs.forEach((img, i) => {
+        img.classList.remove('center', 'near');
+        if (i === (startIdx + 1) % thumbs.length) img.classList.add('near');
+        if (i === (startIdx + 2) % thumbs.length) img.classList.add('center');
+        if (i === (startIdx + 3) % thumbs.length) img.classList.add('near');
+      });
+    }
+    window.addEventListener('resize', updateCarousel);
+    updateCarousel();
+
+    setInterval(() => {
+      startIdx = (startIdx + 1) % thumbs.length;
+      updateCarousel();
+    }, 10000);
+    // === ここまでカルーセルスクリプト ===
   </script>
 </body>
 </html>
