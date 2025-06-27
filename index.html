@@ -94,6 +94,79 @@
     .overlay.show {
       display: block;
     }
+    /* ===== グローバルナビ（ドロップダウン） ===== */
+    .global-nav {
+      background: #111;
+      padding: 0 0 0 2.5rem;
+    }
+    .global-nav ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      gap: 2.4rem;
+      align-items: center;
+      height: 3.4rem;
+    }
+    .global-nav li {
+      position: relative;
+    }
+    .global-nav a, .global-nav .dropbtn {
+      color: #fff !important;
+      text-decoration: none;
+      font-size: 1.12rem;
+      padding: 0.7rem 0.7rem;
+      display: block;
+      background: none;
+      border: none;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    .global-nav a:hover, .global-nav .dropbtn:hover {
+      color: #ffd966 !important;
+    }
+    .global-nav .dropdown-content {
+      display: none;
+      position: absolute;
+      left: 0;
+      top: 2.6rem;
+      background: #222;
+      min-width: 12rem;
+      z-index: 100;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.23);
+      border-radius: 0 0 0.8rem 0.8rem;
+      overflow: hidden;
+    }
+    .global-nav .dropdown-content li {
+      width: 100%;
+    }
+    .global-nav .dropdown-content a {
+      color: #fff !important;
+      padding: 0.7rem 1.2rem;
+      font-size: 1rem;
+    }
+    .global-nav .dropdown:hover .dropdown-content,
+    .global-nav .dropdown:focus-within .dropdown-content {
+      display: block;
+    }
+    /* レスポンシブ */
+    @media (max-width: 700px) {
+      .global-nav ul {
+        flex-direction: column;
+        gap: 0;
+        height: auto;
+        padding-bottom: 0.7rem;
+      }
+      .global-nav {
+        padding-left: 0;
+      }
+      .global-nav .dropdown-content {
+        position: static;
+        box-shadow: none;
+        border-radius: 0;
+        min-width: 100%;
+      }
+    }
     /* ===== カルーセル部分 ===== */
     .carousel-wrap {
       width: 100vw;
@@ -209,6 +282,24 @@
     </h1>
     <p style="margin-top: 2rem; position: relative; top: 2rem; text-align: center; color: #fff;">想いとアイディアをカタチに<br>あなたのモノづくりパートナー、ハルモリズ</p>
   </header>
+  <!-- ▼▼▼ グローバルナビ（ドロップダウンメニュー）追加部分 ▼▼▼ -->
+  <nav class="global-nav">
+    <ul>
+      <li><a href="#about">企業理念</a></li>
+      <li class="dropdown">
+        <a href="#services" class="dropbtn">サービス内容 ▼</a>
+        <ul class="dropdown-content">
+          <li><a href="#laser">レーザー加工</a></li>
+          <li><a href="#silk">シルクスクリーン</a></li>
+          <li><a href="#3d">3Dプリント</a></li>
+          <li><a href="#cnc">CNC加工</a></li>
+        </ul>
+      </li>
+      <li><a href="#origin-section">社名の由来</a></li>
+      <li><a href="#contact">お問い合わせ</a></li>
+    </ul>
+  </nav>
+  <!-- ▲▲▲ ここまで ▲▲▲ -->
   <div class="divider-bar"></div>
   <div class="carousel-wrap">
     <div class="carousel-view" id="carouselView">
@@ -295,62 +386,4 @@
         img.className = "carousel-thumb";
         if (i === -2 || i === 2) img.classList.add('far');
         if (i === -1 || i === 1) img.classList.add('near');
-        if (i === 0) img.classList.add('center');
-        if (selectedIdx === imgIdx) img.classList.add('selected');
-        img.addEventListener('click', (e) => {
-          e.stopPropagation();
-          selectedIdx = imgIdx;
-          centerIdx = imgIdx; // クリック画像を中央へ
-          autoSlide = false;
-          renderCarousel();
-        });
-        carouselTrack.appendChild(img);
-      }
-    }
-    function startAutoSlide() {
-      if (slideTimer) clearInterval(slideTimer);
-      slideTimer = setInterval(() => {
-        if (autoSlide && selectedIdx === null) {
-          centerIdx = (centerIdx + 1) % carouselImages.length;
-          renderCarousel();
-        }
-      }, 10000);
-    }
-    document.addEventListener('click', (e) => {
-      // ドロワー開閉優先
-      if (drawer.classList.contains('open') && !drawer.contains(e.target) && e.target !== toggleButton) {
-        closeDrawer();
-        return;
-      }
-      // カルーセル選択解除
-      if (!carouselTrack.contains(e.target)) {
-        selectedIdx = null;
-        autoSlide = true;
-        renderCarousel();
-      }
-    });
-    carouselView.addEventListener('mousemove', (e) => {
-      if (selectedIdx !== null || isSliding) return;
-      const rect = carouselView.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const width = rect.width;
-      if (x > width / 2) {
-        centerIdx = (centerIdx + 1) % carouselImages.length;
-        renderCarousel();
-        autoSlide = false;
-        isSliding = true;
-        setTimeout(() => { isSliding = false; }, 500);
-      } else if (x < width / 2) {
-        centerIdx = (centerIdx - 1 + carouselImages.length) % carouselImages.length;
-        renderCarousel();
-        autoSlide = false;
-        isSliding = true;
-        setTimeout(() => { isSliding = false; }, 500);
-      }
-    });
-    window.addEventListener('resize', renderCarousel);
-    renderCarousel();
-    startAutoSlide();
-  </script>
-</body>
-</html>
+        if (
