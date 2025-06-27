@@ -152,17 +152,16 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      /* カルーセル中央寄せ */
     }
     .carousel-track {
       display: flex;
       align-items: center;
+      height: 100%;
       position: relative;
       left: 50%;
       transform: translateX(-50%);
-      /* 常に中央寄せ */
+      /* 中央寄せ */
       transition: transform 0.6s cubic-bezier(.77,0,.18,1);
-      height: 100%;
     }
     .carousel-thumb {
       width: 22vw;
@@ -183,11 +182,13 @@
       cursor: pointer;
       border: 4px solid transparent;
       z-index: 1;
+      /* 初期は一番小さく */
+      transform: scale(0.7);
     }
     .carousel-thumb.far {
       /* 両端 */
       transform: scale(0.7);
-      opacity: 0.40;
+      opacity: 0.4;
       z-index: 0;
     }
     .carousel-thumb.near {
@@ -400,12 +401,18 @@
       const x = e.clientX - rect.left;
       const width = rect.width;
       if (x > width / 2) {
-        // 右
         centerIdx = (centerIdx + 1) % carouselImages.length;
         renderCarousel();
         autoSlide = false;
         isSliding = true;
         setTimeout(() => { isSliding = false; }, 500);
       } else if (x < width / 2) {
-        // 左
-        centerIdx = (centerIdx -
+        centerIdx = (centerIdx - 1 + carouselImages.length) % carouselImages.length;
+        renderCarousel();
+        autoSlide = false;
+        isSliding = true;
+        setTimeout(() => { isSliding = false; }, 500);
+      }
+    });
+
+    window.addEventListener('resize', renderCarousel
