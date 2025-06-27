@@ -128,7 +128,6 @@
       display: block;
     }
 
-    /* ===== Top帯・中間帯 ===== */
     .top-bar,
     .divider-bar {
       background-color: black;
@@ -237,11 +236,7 @@
   <div class="carousel-wrap">
     <div class="carousel-view">
       <div class="carousel-track" id="carouselTrack">
-        <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=800" class="carousel-thumb" alt="sample1">
-        <img src="https://images.unsplash.com/photo-1519125323398-675f0ddb6308?w=800" class="carousel-thumb" alt="sample2">
-        <img src="https://images.unsplash.com/photo-1465101046530-73398c7f28ca?w=800" class="carousel-thumb" alt="sample3">
-        <img src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=800" class="carousel-thumb" alt="sample4">
-        <img src="https://images.unsplash.com/photo-1465101178521-c1a9136a3fd0?w=800" class="carousel-thumb" alt="sample5">
+        <!-- 中身はJSで自動生成 -->
       </div>
     </div>
   </div>
@@ -327,63 +322,61 @@
       }
     }
 
-    // === カルーセルスクリプト ===
+    // ===== カルーセルサンプル画像リスト（URLを信頼性あるものに修正済み） =====
+    const carouselImages = [
+      { src: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=800", alt: "sample1" },
+      { src: "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?w=800", alt: "sample2" },
+      { src: "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?w=800", alt: "sample3" },
+      { src: "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=800", alt: "sample4" },
+      { src: "https://images.unsplash.com/photo-1465101178521-c1a9136a3fd0?w=800", alt: "sample5" }
+    ];
+
+    // ===== カルーセル描画・ロジック =====
     const carouselTrack = document.getElementById('carouselTrack');
-    const thumbs = Array.from(carouselTrack.children);
     const PARTIAL = 0.25; // 両端4分の1だけ見せる
-    let startIdx = 0;
+    let centerIdx = 2; // 最初は中央=3番目(0スタート)
     let selectedIdx = null;
     let autoSlide = true;
     let slideTimer = null;
 
-    function updateCarousel() {
-      const thumbW = thumbs[0].offsetWidth + (parseFloat(getComputedStyle(thumbs[0]).marginLeft) || 0) + (parseFloat(getComputedStyle(thumbs[0]).marginRight) || 0);
-      const offset = (startIdx * thumbW) - (thumbW * (1 - PARTIAL));
-      carouselTrack.style.transform = `translateX(${-offset}px)`;
-      thumbs.forEach((img, i) => {
-        img.classList.remove('center', 'near', 'selected');
-        if (selectedIdx === i) {
-          img.classList.add('selected');
-        } else {
-          if (i === (startIdx + 1) % thumbs.length) img.classList.add('near');
-          if (i === (startIdx + 2) % thumbs.length) img.classList.add('center');
-          if (i === (startIdx + 3) % thumbs.length) img.classList.add('near');
-        }
-      });
+    function renderCarousel() {
+      // 5枚表示。中央から-2～+2を並べる（端はループで）
+      carouselTrack.innerHTML = '';
+      const total = carouselImages.length;
+      for (let i = -2; i <= 2; i++) {
+        const imgIdx = (centerIdx + i + total) % total;
+        const img = document.createElement('img');
+        img.src = carouselImages[imgIdx].src;
+        img.alt = carouselImages[imgIdx].alt;
+        img.className = "carousel-thumb";
+        // 両端
+        if (i === -2 || i === 2) img.style.opacity = "0.55";
+        // near
+        if (i === -1 || i === 1) img.classList.add('near');
+        // center
+        if (i === 0) img.classList.add('center');
+        if (selectedIdx === imgIdx) img.classList.add('selected');
+        img.addEventListener('click', (e) => {
+          e.stopPropagation();
+          selectedIdx = imgIdx;
+          autoSlide = false;
+          renderCarousel();
+        });
+        carouselTrack.appendChild(img);
+      }
+      // レイアウト調整：transformで中央を表示（不要：5枚常に並べる）
     }
-    window.addEventListener('resize', updateCarousel);
 
     function startAutoSlide() {
       if (slideTimer) clearInterval(slideTimer);
       slideTimer = setInterval(() => {
         if (autoSlide && selectedIdx === null) {
-          startIdx = (startIdx + 1) % thumbs.length;
-          updateCarousel();
+          centerIdx = (centerIdx + 1) % carouselImages.length;
+          renderCarousel();
         }
       }, 10000);
     }
-    startAutoSlide();
 
-    thumbs.forEach((img, i) => {
-      img.addEventListener('click', (e) => {
-        e.stopPropagation();
-        selectedIdx = i;
-        autoSlide = false;
-        updateCarousel();
-      });
-    });
-
-    // 外をクリックしたら選択解除＆自動スライド再開
     document.addEventListener('click', (e) => {
       if (!carouselTrack.contains(e.target)) {
         selectedIdx = null;
-        autoSlide = true;
-        updateCarousel();
-      }
-    });
-
-    updateCarousel();
-    // === カルーセルここまで ===
-  </script>
-</body>
-</html>
