@@ -145,17 +145,24 @@
     .carousel-view {
       width: 100vw;
       max-width: 100vw;
-      overflow: hidden;
+      overflow: visible;
       position: relative;
       height: clamp(120px, 32vw, 250px);
       border-radius: 1.5rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      /* カルーセル中央寄せ */
     }
     .carousel-track {
       display: flex;
-      transition: transform 0.8s cubic-bezier(.77,0,.18,1);
-      will-change: transform;
-      height: 100%;
       align-items: center;
+      position: relative;
+      left: 50%;
+      transform: translateX(-50%);
+      /* 常に中央寄せ */
+      transition: transform 0.6s cubic-bezier(.77,0,.18,1);
+      height: 100%;
     }
     .carousel-thumb {
       width: 22vw;
@@ -168,20 +175,32 @@
       box-shadow: 0 4px 18px rgba(0,0,0,0.11);
       flex-shrink: 0;
       opacity: 0.7;
-      transition: opacity 0.5s, transform 0.5s, border 0.4s;
+      transition: 
+        opacity 0.5s, 
+        transform 0.5s, 
+        border 0.4s,
+        z-index 0.5s;
       cursor: pointer;
       border: 4px solid transparent;
+      z-index: 1;
     }
-    .carousel-thumb.center {
-      opacity: 1;
-      transform: scale(1.07);
-      z-index: 2;
-      border: 4px solid #ffd966;
+    .carousel-thumb.far {
+      /* 両端 */
+      transform: scale(0.7);
+      opacity: 0.40;
+      z-index: 0;
     }
     .carousel-thumb.near {
-      opacity: 0.89;
-      transform: scale(1.00);
+      /* 両隣 */
+      transform: scale(0.88);
+      opacity: 0.68;
       z-index: 1;
+    }
+    .carousel-thumb.center {
+      transform: scale(1.13);
+      opacity: 1;
+      z-index: 2;
+      border: 4px solid #ffd966;
     }
     .carousel-thumb.selected {
       border: 4px solid #1e90ff;
@@ -227,19 +246,13 @@
     <p style="margin-top: 2rem; position: relative; top: 2rem; text-align: center;">想いとアイディアをカタチに<br>あなたのモノづくりパートナー、ハルモリズ</p>
   </header>
 
-  <!-- ▼▼ 追加した帯 ▼▼ -->
   <div class="divider-bar"></div>
-  <!-- ▲▲ 追加した帯 ▲▲ -->
 
-  <!-- ▼▼ カルーセル：header直下 ▼▼ -->
   <div class="carousel-wrap">
     <div class="carousel-view" id="carouselView">
-      <div class="carousel-track" id="carouselTrack">
-        <!-- JSで動的に画像5枚表示 -->
-      </div>
+      <div class="carousel-track" id="carouselTrack"></div>
     </div>
   </div>
-  <!-- ▲▲ カルーセルここまで ▲▲ -->
 
   <nav></nav>
   
@@ -284,6 +297,7 @@
   </footer>
 
   <script>
+    // ドロワー等はそのまま
     const toggleButton = document.querySelector('.drawer-toggle');
     function toggleDrawer() {
       const drawer = document.getElementById('drawer');
@@ -347,7 +361,7 @@
         img.src = carouselImages[imgIdx].src;
         img.alt = carouselImages[imgIdx].alt;
         img.className = "carousel-thumb";
-        if (i === -2 || i === 2) img.style.opacity = "0.55";
+        if (i === -2 || i === 2) img.classList.add('far');
         if (i === -1 || i === 1) img.classList.add('near');
         if (i === 0) img.classList.add('center');
         if (selectedIdx === imgIdx) img.classList.add('selected');
@@ -394,18 +408,4 @@
         setTimeout(() => { isSliding = false; }, 500);
       } else if (x < width / 2) {
         // 左
-        centerIdx = (centerIdx - 1 + carouselImages.length) % carouselImages.length;
-        renderCarousel();
-        autoSlide = false;
-        isSliding = true;
-        setTimeout(() => { isSliding = false; }, 500);
-      }
-    });
-
-    window.addEventListener('resize', renderCarousel);
-
-    renderCarousel();
-    startAutoSlide();
-  </script>
-</body>
-</html>
+        centerIdx = (centerIdx -
