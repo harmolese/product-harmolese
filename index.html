@@ -128,6 +128,14 @@
       display: block;
     }
 
+    /* ===== Top帯・中間帯 ===== */
+    .top-bar,
+    .divider-bar {
+      background-color: black;
+      height: 2.8rem;
+      width: 100%;
+    }
+
     /* ===== カルーセル部分 ===== */
     .carousel-wrap {
       width: 100vw;
@@ -204,7 +212,7 @@
   </style>
 </head>
 <body>
-  <div style="background-color: black; height: 2.8rem; width: 100%;"></div>
+  <div class="top-bar"></div>
   <div id="overlay" class="overlay"></div>
   <button class="drawer-toggle" onclick="toggleDrawer()">☰ Menu</button>
   <div class="drawer" id="drawer" style="padding-top: 6rem;">
@@ -220,6 +228,10 @@
     </h1>
     <p style="margin-top: 2rem; position: relative; top: 2rem; text-align: center;">想いとアイディアをカタチに<br>あなたのモノづくりパートナー、ハルモリズ</p>
   </header>
+
+  <!-- ▼▼ 追加した帯 ▼▼ -->
+  <div class="divider-bar"></div>
+  <!-- ▲▲ 追加した帯 ▲▲ -->
 
   <!-- ▼▼ カルーセル：header直下 ▼▼ -->
   <div class="carousel-wrap">
