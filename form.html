@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>タンブラー レイアウトプレビュー（無料メール送信対応）</title>
+  <title>タンブラー レイアウトプレビュー（全機能版）</title>
   <meta name="viewport" content="width=350,initial-scale=1.0">
   <style>
     body {
@@ -15,16 +15,38 @@
     .container { max-width: 400px; margin: 40px auto; background: #fff; padding: 2em 1.5em; border-radius: 12px; box-shadow: 0 4px 24px #aaa2; text-align: center; }
     .note { font-size: 0.9em; color: #888; margin-top: 8px; }
     textarea { width: 95%; border-radius: 8px; font-size: 1em; margin: 0.5em 0; }
-    .ctrl-btn, .reset-btn { margin-top: 0.3em; }
+    .controls { margin: 1em 0; display: flex; flex-direction: column; align-items: center; gap: 0.2em; }
+    .ctrl-row { display: flex; justify-content: center; gap: 0.5em; margin-bottom: 2px; }
+    .ctrl-row:last-child { margin-bottom: 0; }
+    button.ctrl-btn { font-size: 1.3em; width: 2.2em; height: 2.2em; border-radius: 8px; border: 1px solid #ccc; background: #f8f8f8; cursor: pointer; transition: background 0.2s; }
+    button.ctrl-btn:active { background: #e0e0e0; }
+    button.reset-btn { font-size: 1em; margin-top: 0.5em; padding: 0.4em 1.2em; border-radius: 8px; background: #eee; border: 1px solid #bbb; cursor: pointer; }
+    button.reset-btn:active { background: #ddd; }
     #save-btn { margin-bottom: 1em; padding: 0.4em 1.2em; border-radius: 8px; background: #9ec9e8; color: #233; border: 1px solid #bbb; cursor: pointer; }
     #save-btn:active { background: #7fb7da; }
-    canvas { display: block; margin: 0 auto 10px auto; border-radius: 16px; box-shadow: 0 0 8px #aaa; background: #eee; }
+    canvas { display: block; margin: 0 auto 10px auto; border-radius: 16px; box-shadow: 0 0 8px #aaa; background: #eee; cursor: grab; touch-action: none; }
   </style>
 </head>
 <body>
   <div class="container">
     <h2>タンブラー レイアウトプレビュー</h2>
     <canvas id="tumbler-canvas" width="260" height="400"></canvas>
+    <!-- マウス・ボタン操作コントロール -->
+    <div class="controls">
+      <div class="ctrl-row">
+        <button class="ctrl-btn" id="move-up" title="上へ">↑</button>
+      </div>
+      <div class="ctrl-row">
+        <button class="ctrl-btn" id="move-left" title="左へ">←</button>
+        <button class="ctrl-btn" id="zoom-in" title="拡大">＋</button>
+        <button class="ctrl-btn" id="zoom-out" title="縮小">－</button>
+        <button class="ctrl-btn" id="move-right" title="右へ">→</button>
+      </div>
+      <div class="ctrl-row">
+        <button class="ctrl-btn" id="move-down" title="下へ">↓</button>
+      </div>
+      <button class="reset-btn" id="reset-btn" title="リセット">リセット</button>
+    </div>
     <!-- 画像を保存ボタン -->
     <div style="margin:1em 0;">
       <button id="save-btn" title="プレビュー画像を保存">画像を保存</button>
@@ -41,18 +63,24 @@
       <input type="file" id="image-upload" accept="image/*">
     </label>
     <div class="note">
-      ※「完了」ボタンで備考欄の内容のみ送信されます。<br>
+      ※画像の自動添付メール送信は無料ではできません。<br>
       ※「画像を保存」でプレビュー画像を保存→ご自身でメール添付してください。<br>
-      <b>※画像の自動添付メール送信は無料ではできません。</b>
+      ※画像はドラッグで移動、ホイールで拡大縮小、上下左右・拡大縮小ボタンでも微調整できます。<br>
+      ※「完了」ボタンで備考欄の内容のみ送信されます。
     </div>
   </div>
   <script>
-    // テンプレート画像のパス（必ずHTMLと同じ場所に！）
+    // --- 基本定義
     const tumblerImgSrc = "67a9bd50-6f8c-48f9-9556-dff30c898654.png";
     const canvas = document.getElementById("tumbler-canvas");
     const ctx = canvas.getContext("2d");
+    const MOVE_STEP = 10;
+    const SCALE_STEP = 0.08;
+
     let tumblerImg = new Image();
+    tumblerImg.src = tumblerImgSrc;
     let tDraw = { x: 0, y: 0, w: 0, h: 0 };
+
     let userImg = null;
     let userPos = { x: 0, y: 0, scale: 1 };
     let defaultPos = { x: 0, y: 0, scale: 1 };
@@ -90,9 +118,8 @@
       }
     }
 
-    // テンプレ画像のロード
+    // --- テンプレ画像ロード
     tumblerImg.onload = () => { drawAll(); };
-    tumblerImg.src = tumblerImgSrc;
 
     // 画像保存ボタン
     document.getElementById('save-btn').onclick = function() {
@@ -102,7 +129,7 @@
       a.click();
     };
 
-    // アップロード画像処理
+    // 画像アップロード
     document.getElementById('image-upload').addEventListener('change', function(e) {
       const file = e.target.files[0];
       if (!file) return;
@@ -119,7 +146,77 @@
       reader.readAsDataURL(file);
     });
 
-    // ※必要に応じて移動・拡大縮小・ドラッグ等のJSも追加
+    // --- ボタン操作
+    document.getElementById('move-up').onclick = () => { userPos.y -= MOVE_STEP; drawAll(); }
+    document.getElementById('move-down').onclick = () => { userPos.y += MOVE_STEP; drawAll(); }
+    document.getElementById('move-left').onclick = () => { userPos.x -= MOVE_STEP; drawAll(); }
+    document.getElementById('move-right').onclick = () => { userPos.x += MOVE_STEP; drawAll(); }
+    document.getElementById('zoom-in').onclick = () => { userPos.scale *= (1 + SCALE_STEP); drawAll(); }
+    document.getElementById('zoom-out').onclick = () => {
+      userPos.scale /= (1 + SCALE_STEP);
+      if(userPos.scale < 0.2) userPos.scale = 0.2;
+      drawAll();
+    }
+    document.getElementById('reset-btn').onclick = () => { userPos = { ...defaultPos }; drawAll(); }
+
+    // --- マウス操作
+    let dragging = false;
+    let dragOffset = { x: 0, y: 0 };
+
+    canvas.addEventListener('mousedown', function(e) {
+      if (!userImg) return;
+      const rect = canvas.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
+      const baseW = 160 * userPos.scale;
+      const baseH = (160 * (userImg.height / userImg.width)) * userPos.scale;
+      if (
+        mouseX >= userPos.x && mouseX <= userPos.x + baseW &&
+        mouseY >= userPos.y && mouseY <= userPos.y + baseH
+      ) {
+        dragging = true;
+        dragOffset.x = mouseX - userPos.x;
+        dragOffset.y = mouseY - userPos.y;
+        canvas.style.cursor = "grabbing";
+      }
+    });
+
+    canvas.addEventListener('mousemove', function(e) {
+      if (!userImg || !dragging) return;
+      const rect = canvas.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
+      userPos.x = mouseX - dragOffset.x;
+      userPos.y = mouseY - dragOffset.y;
+      drawAll();
+    });
+
+    window.addEventListener('mouseup', function() {
+      dragging = false;
+      canvas.style.cursor = "grab";
+    });
+
+    // ホイールで拡大縮小
+    canvas.addEventListener('wheel', function(e) {
+      if (!userImg) return;
+      e.preventDefault();
+      let newScale = userPos.scale * (e.deltaY < 0 ? 1.08 : 1 / 1.08);
+      if (newScale < 0.2) newScale = 0.2;
+      if (newScale > 6.0) newScale = 6.0;
+      const baseW = 160 * userPos.scale;
+      const baseH = (160 * (userImg.height / userImg.width)) * userPos.scale;
+      const centerX = userPos.x + baseW / 2;
+      const centerY = userPos.y + baseH / 2;
+      const newBaseW = 160 * newScale;
+      const newBaseH = (160 * (userImg.height / userImg.width)) * newScale;
+      userPos.x = centerX - newBaseW / 2;
+      userPos.y = centerY - newBaseH / 2;
+      userPos.scale = newScale;
+      drawAll();
+    });
+
+    // --- 初回描画
+    //tumblerImg.onload = () => { calcTumblerDrawInfo(); drawAll(); };
   </script>
 </body>
 </html>
