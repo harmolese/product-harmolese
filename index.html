@@ -18,7 +18,10 @@
       color: #fff !important;
       text-decoration: underline;
     }
-    /* headerの背景だけ画像＋黒ヴェール */
+    a.contact-link {
+      color: #2196f3 !important;
+      text-decoration: underline;
+    }
     header {
       background-image: linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)), url('./images/header-bg.png');
       background-size: cover;
@@ -63,7 +66,7 @@
       height: 100%;
       background-color: #111;
       color: #fff;
-      padding: 5.5rem 1rem 2rem 1rem; /* ←ここを下げています */
+      padding: 5.5rem 1rem 2rem 1rem;
       transition: transform 0.4s cubic-bezier(.77,0,.18,1);
       z-index: 30;
       box-shadow: 4px 0 20px rgba(0,0,0,0.18);
@@ -102,7 +105,7 @@
       display: flex;
       justify-content: center;
       background: transparent;
-      margin: 0 auto 2rem auto;
+      margin: 0 auto 3.5rem auto;
     }
     .carousel-view {
       width: 100%;
@@ -128,7 +131,7 @@
       max-width: 330px;
       min-width: 100px;
       height: 90%;
-      margin: 0 0.25vw;
+      margin: 0;
       object-fit: cover;
       border-radius: 1.1rem;
       box-shadow: 0 4px 18px rgba(0,0,0,0.30);
@@ -147,12 +150,21 @@
       z-index: 0;
     }
     .carousel-thumb.near {
-      transform: scale(0.88);
+      transform: scale(0.88) translateX(var(--near-offset, 0));
       opacity: 0.68;
       z-index: 1;
     }
+    .carousel-thumb.near.left {
+      --near-offset: -18%;
+    }
+    .carousel-thumb.near.right {
+      --near-offset: 18%;
+    }
     .carousel-thumb.center {
-      transform: scale(1.13);
+      width: 32vw !important;
+      max-width: 520px !important;
+      min-width: 180px !important;
+      transform: scale(1.35);
       opacity: 1;
       z-index: 2;
       border: 4px solid #ffd966;
@@ -166,8 +178,29 @@
       color: #fff !important;
       background: transparent;
     }
+    main {
+      text-align: center;
+    }
+    section {
+      padding-left: 0 !important;
+    }
     ul, li {
       background: transparent;
+    }
+    /* フェードイン */
+    .fade-in {
+      opacity: 0;
+      filter: blur(12px);
+      transform: translateY(60px);
+      transition:
+        opacity 1.3s cubic-bezier(.85,0,.15,1),
+        transform 1.1s cubic-bezier(.85,0,.15,1),
+        filter 1.2s cubic-bezier(.85,0,.15,1);
+    }
+    .fade-in.show {
+      opacity: 1;
+      filter: blur(0);
+      transform: translateY(0);
     }
     footer {
       background-color: #111;
@@ -209,7 +242,11 @@
       <span style="font-size: 4.5rem; text-transform: uppercase; letter-spacing: 0.08em; display: inline-block; border-bottom: 2px solid white; text-shadow: 0 3px 6px rgba(0, 0, 0, 0.8); padding-bottom: 0.2rem; color: #fff;">Harmolese</span><br>
       <span style="font-size: 1rem; font-family: 'Libre Baskerville', serif; letter-spacing: 0.1em; color: #fff;">- ハルモリズ -</span>
     </h1>
-    <p style="margin-top: 2rem; position: relative; top: 2rem; text-align: center; color: #fff;">想いとアイディアをカタチに<br>あなたのモノづくりパートナー、ハルモリズ</p>
+    <p style="margin-top: 2rem; position: relative; top: 2rem; text-align: center; color: #fff;">
+      想いとアイディアをカタチに<br>
+      あなたのモノづくりパートナー、ハルモリズ
+    </p>
+    <div style="height: 3.5rem;"></div>
   </header>
   <div class="divider-bar"></div>
   <div class="carousel-wrap">
@@ -218,12 +255,12 @@
     </div>
   </div>
   <main>
-    <section id="about" style="padding-left: 1.5rem;">
+    <section id="about" class="fade-in">
       <h2>企業理念</h2>
       <p>お客様の想いを第一に考え、その想いやアイディアを、高度な技術によって形にいたします。</p>
       <p>また、弊社で製作・販売された商品を手にした方、贈られた方、あるいは購入された方すべての「笑顔」を大切にします。</p>
     </section>
-    <section id="origin-section" style="padding-left: 1.5rem;">
+    <section id="origin-section" class="fade-in">
       <h2>社名の由来</h2>
       <p>
         異なる素材同士を融合し、調和のとれた魅力的な商品を創造する。<br>
@@ -231,20 +268,20 @@
         私たちは、ものづくりを通じて「人」「素材」「想い」のすべてが調和する事業を目指しています。
       </p>
     </section>
-    <section id="services" style="padding-left: 1.5rem;">
+    <section id="services" class="fade-in">
       <h2>サービス内容</h2>
-      <ul>
-        <li><strong>レーザー彫刻・エンボス加工</strong>（金属、木材、アクリルなど多様な素材に対応）</li>
-        <li><strong>シルクスクリーン印刷</strong>（Tシャツ、トートバッグ、ポーチなどへの印刷加工）※ノベルティやギフト商品に最適です。</li>
-        <li><strong>生糸の製糸技術を活かしたオリジナル商品開発</strong></li>
-        <li><strong>3Dスキャンおよび3Dプリント</strong>（模型やフィギュアなど立体造形物の制作）</li>
-        <li><strong>その他、各種ご要望に応じた柔軟な対応も可能です。</strong></li>
-        <li><em>※今後、CNCフライス加工機の導入も予定しています。</em></li>
+      <ul style="display:inline-block; text-align:left; margin:0 auto; padding-left:2.2em; list-style: none;">
+        <li>・<strong>レーザー彫刻・エンボス加工</strong>（金属、木材、アクリルなど多様な素材に対応）</li>
+        <li>・<strong>シルクスクリーン印刷</strong>（Tシャツ、トートバッグ、ポーチなどへの印刷加工）※ノベルティやギフト商品に最適です。</li>
+        <li>・<strong>生糸の製糸技術を活かしたオリジナル商品開発</strong></li>
+        <li>・<strong>3Dスキャンおよび3Dプリント</strong>（模型やフィギュアなど立体造形物の制作）</li>
+        <li>・<strong>その他、各種ご要望に応じた柔軟な対応も可能です。</strong></li>
+        <li>・<em>※今後、CNCフライス加工機の導入も予定しています。</em></li>
       </ul>
     </section>
-    <section id="contact" style="padding-left: 1.5rem;">
+    <section id="contact">
       <h2>
-        <a href="form.html" style="color: #fff; text-decoration:underline;">お問い合わせ</a>
+        <a href="form.html" class="contact-link">お問い合わせ</a>
       </h2>
     </section>
   </main>
@@ -280,7 +317,7 @@
       { src: "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?w=800", alt: "sample2" },
       { src: "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?w=800", alt: "sample3" },
       { src: "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=800", alt: "sample4" },
-      { src: "https://images.unsplash.com/photo-1465101178521-c1a9136a3fd0?w=800", alt: "sample5" }
+      { src: "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg", alt: "sample5" }
     ];
     const carouselTrack = document.getElementById('carouselTrack');
     const carouselView = document.getElementById('carouselView');
@@ -299,7 +336,8 @@
         img.alt = carouselImages[imgIdx].alt;
         img.className = "carousel-thumb";
         if (i === -2 || i === 2) img.classList.add('far');
-        if (i === -1 || i === 1) img.classList.add('near');
+        if (i === -1) img.classList.add('near', 'left');
+        if (i === 1) img.classList.add('near', 'right');
         if (i === 0) img.classList.add('center');
         if (selectedIdx === imgIdx) img.classList.add('selected');
         img.addEventListener('click', (e) => {
@@ -356,6 +394,18 @@
     window.addEventListener('resize', renderCarousel);
     renderCarousel();
     startAutoSlide();
+
+    // --- フェードイン ---
+    document.querySelectorAll('main section.fade-in').forEach(el => el.classList.remove('show'));
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('show');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('main section.fade-in').forEach(el => io.observe(el));
   </script>
 </body>
 </html>
