@@ -2,217 +2,53 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>タンブラー レイアウトプレビュー（マウス操作対応）</title>
+  <title>タンブラー レイアウトプレビュー（無料メール送信対応）</title>
   <meta name="viewport" content="width=350,initial-scale=1.0">
   <style>
-    body {
-      font-family: sans-serif;
-      background: #f6f7fa;
-      color: #333;
-      margin: 0;
-      padding: 0;
-    }
-    .container {
-      max-width: 400px;
-      margin: 40px auto;
-      background: #fff;
-      padding: 2em 1.5em;
-      border-radius: 12px;
-      box-shadow: 0 4px 24px #aaa2;
-      text-align: center;
-    }
-    h2 {
-      margin-top: 0;
-      font-size: 1.25rem;
-      color: #31373a;
-      letter-spacing: 0.1em;
-    }
-    canvas {
-      display: block;
-      margin: 0 auto 10px auto;
-      border-radius: 16px;
-      box-shadow: 0 0 8px #aaa;
-      background: #eee;
-      cursor: grab;
-      touch-action: none;
-    }
-    label {
-      display: inline-block;
-      margin-top: 1em;
-      font-weight: bold;
-      font-size: 1rem;
-      cursor: pointer;
-      color: #222;
-    }
-    input[type="file"] {
-      margin-left: 8px;
-    }
-    .note {
-      font-size: 0.9em;
-      color: #888;
-      margin-top: 8px;
-    }
-    button.reset-btn {
-      font-size: 1em;
-      margin-top: 0.5em;
-      padding: 0.4em 1.2em;
-      border-radius: 8px;
-      background: #eee;
-      border: 1px solid #bbb;
-      cursor: pointer;
-    }
-    button.reset-btn:active {
-      background: #ddd;
-    }
+    /* ...前のスタイル省略（必要なら貼り付けてください）... */
+    .container { max-width: 400px; margin: 40px auto; background: #fff; padding: 2em 1.5em; border-radius: 12px; box-shadow: 0 4px 24px #aaa2; text-align: center; }
+    .note { font-size: 0.9em; color: #888; margin-top: 8px; }
+    textarea { width: 95%; border-radius: 8px; font-size: 1em; margin: 0.5em 0; }
+    .ctrl-btn, .reset-btn { margin-top: 0.3em; }
+    #save-btn { margin-bottom: 1em; padding: 0.4em 1.2em; border-radius: 8px; background: #9ec9e8; color: #233; border: 1px solid #bbb; cursor: pointer; }
+    #save-btn:active { background: #7fb7da; }
   </style>
 </head>
 <body>
   <div class="container">
     <h2>タンブラー レイアウトプレビュー</h2>
     <canvas id="tumbler-canvas" width="260" height="400"></canvas>
-    <button class="reset-btn" id="reset-btn" title="リセット">リセット</button>
+    <!-- ここに画像移動・拡大縮小ボタンやドラッグ＆ホイールJSも追加できます（省略） -->
+    <div style="margin:1em 0;">
+      <button id="save-btn" title="プレビュー画像を保存">画像を保存</button>
+    </div>
+    <!-- フォーム部。actionはFormspreeで発行されたURLに置き換えてください -->
+    <form id="contact-form" action="https://formspree.io/f/あなたのID" method="POST">
+      <textarea id="bikou" name="message" rows="3" placeholder="備考欄：ご要望や連絡先等" required></textarea>
+      <input type="hidden" name="_subject" value="タンブラー彫刻">
+      <input type="hidden" name="_replyto" value="ryuji.hirashiki@gmail.com">
+      <button type="submit" class="reset-btn" style="background:#379;color:#fff;">完了</button>
+    </form>
     <label>
       レイアウト画像を選択　
       <input type="file" id="image-upload" accept="image/*">
     </label>
     <div class="note">
-      ※ 画像はドラッグで移動、ホイールで拡大縮小できます。<br>
-      ※ アップロードした画像はプレビューにのみ利用され、外部送信されません。
+      ※「完了」ボタンで備考欄の内容のみ送信されます。<br>
+      ※「画像を保存」でプレビュー画像を保存→ご自身でメール添付してください。<br>
+      <b>※画像の自動添付メール送信は無料ではできません。</b>
     </div>
   </div>
-
   <script>
-    const tumblerImgSrc = "67a9bd50-6f8c-48f9-9556-dff30c898654.png";
-    const canvas = document.getElementById("tumbler-canvas");
-    const ctx = canvas.getContext("2d");
-
-    // テンプレ画像情報
-    let tumblerImg = new Image();
-    tumblerImg.src = tumblerImgSrc;
-    let tDraw = { x: 0, y: 0, w: 0, h: 0 };
-
-    let userImg = null;
-    let userPos = { x: 0, y: 0, scale: 1 };
-    let defaultPos = { x: 0, y: 0, scale: 1 };
-
-    function calcTumblerDrawInfo() {
-      const cW = canvas.width, cH = canvas.height;
-      const iW = tumblerImg.width, iH = tumblerImg.height;
-      const scale = Math.min(cW / iW, cH / iH);
-      const drawW = iW * scale;
-      const drawH = iH * scale;
-      const offsetX = (cW - drawW) / 2;
-      const offsetY = (cH - drawH) / 2;
-      tDraw = { x: offsetX, y: offsetY, w: drawW, h: drawH };
-    }
-
-    function resetUserPos() {
-      if (!userImg) return;
-      const imgW = 160;
-      const imgH = 160 * (userImg.height / userImg.width);
-      const x = tDraw.x + (tDraw.w - imgW) / 2;
-      const y = tDraw.y + (tDraw.h - imgH) / 2 + 30;
-      userPos = { x: x, y: y, scale: 1 };
-      defaultPos = { ...userPos };
-    }
-
-    document.getElementById('image-upload').addEventListener('change', function(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(evt) {
-        userImg = new Image();
-        userImg.onload = () => {
-          calcTumblerDrawInfo();
-          resetUserPos();
-          drawAll();
-        };
-        userImg.src = evt.target.result;
-      };
-      reader.readAsDataURL(file);
-    });
-
-    function drawAll() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      calcTumblerDrawInfo();
-      ctx.drawImage(tumblerImg, tDraw.x, tDraw.y, tDraw.w, tDraw.h);
-      if (userImg) {
-        const baseW = 160 * userPos.scale;
-        const baseH = (160 * (userImg.height / userImg.width)) * userPos.scale;
-        ctx.globalAlpha = 0.92;
-        ctx.drawImage(userImg, userPos.x, userPos.y, baseW, baseH);
-        ctx.globalAlpha = 1.0;
-      }
-    }
-
-    // --- マウス操作 ---
-    let dragging = false;
-    let dragOffset = { x: 0, y: 0 };
-
-    canvas.addEventListener('mousedown', function(e) {
-      if (!userImg) return;
-      const rect = canvas.getBoundingClientRect();
-      const mouseX = e.clientX - rect.left;
-      const mouseY = e.clientY - rect.top;
-      const baseW = 160 * userPos.scale;
-      const baseH = (160 * (userImg.height / userImg.width)) * userPos.scale;
-      // 画像の範囲内をクリックした場合のみドラッグ開始
-      if (
-        mouseX >= userPos.x && mouseX <= userPos.x + baseW &&
-        mouseY >= userPos.y && mouseY <= userPos.y + baseH
-      ) {
-        dragging = true;
-        dragOffset.x = mouseX - userPos.x;
-        dragOffset.y = mouseY - userPos.y;
-        canvas.style.cursor = "grabbing";
-      }
-    });
-
-    canvas.addEventListener('mousemove', function(e) {
-      if (!userImg || !dragging) return;
-      const rect = canvas.getBoundingClientRect();
-      const mouseX = e.clientX - rect.left;
-      const mouseY = e.clientY - rect.top;
-      userPos.x = mouseX - dragOffset.x;
-      userPos.y = mouseY - dragOffset.y;
-      drawAll();
-    });
-
-    window.addEventListener('mouseup', function() {
-      dragging = false;
-      canvas.style.cursor = "grab";
-    });
-
-    // ホイールで拡大縮小
-    canvas.addEventListener('wheel', function(e) {
-      if (!userImg) return;
-      e.preventDefault();
-      let oldScale = userPos.scale;
-      let newScale = userPos.scale * (e.deltaY < 0 ? 1.08 : 1 / 1.08);
-      if (newScale < 0.2) newScale = 0.2;
-      if (newScale > 6.0) newScale = 6.0;
-
-      // 画像の中心を維持して拡大縮小（マウス座標に合わせてもOK）
-      const baseW = 160 * userPos.scale;
-      const baseH = (160 * (userImg.height / userImg.width)) * userPos.scale;
-      const centerX = userPos.x + baseW / 2;
-      const centerY = userPos.y + baseH / 2;
-      const newBaseW = 160 * newScale;
-      const newBaseH = (160 * (userImg.height / userImg.width)) * newScale;
-      userPos.x = centerX - newBaseW / 2;
-      userPos.y = centerY - newBaseH / 2;
-      userPos.scale = newScale;
-      drawAll();
-    });
-
-    // リセット
-    document.getElementById('reset-btn').onclick = () => { userPos = { ...defaultPos }; drawAll(); };
-
-    // 初回描画
-    tumblerImg.onload = () => {
-      calcTumblerDrawInfo();
-      drawAll();
+    // 画像保存ボタン
+    document.getElementById('save-btn').onclick = function() {
+      const canvas = document.getElementById("tumbler-canvas");
+      const a = document.createElement('a');
+      a.href = canvas.toDataURL("image/png");
+      a.download = "tumbler_layout.png";
+      a.click();
     };
+    // ...移動・拡大縮小・ドラッグ・ホイールなどのJSは前のサンプルと同様に追加OK...
   </script>
 </body>
 </html>
