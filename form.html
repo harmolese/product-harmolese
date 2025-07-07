@@ -2,105 +2,117 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>お問い合わせ | Harmolese</title>
+  <title>タンブラー レイアウトプレビュー</title>
+  <meta name="viewport" content="width=350,initial-scale=1.0">
   <style>
     body {
       font-family: sans-serif;
-      background-color: #f5f5f5;
-      margin: 0;
+      background: #f6f7fa;
       color: #333;
+      margin: 0;
+      padding: 0;
     }
-    header, footer {
-      background-color: #222;
-      color: white;
-      text-align: center;
-      padding: 1.5rem;
-    }
-    main {
-      padding: 2rem;
-      max-width: 700px;
-      margin: auto;
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    h1 {
+    .container {
+      max-width: 400px;
+      margin: 40px auto;
+      background: #fff;
+      padding: 2em 1.5em;
+      border-radius: 12px;
+      box-shadow: 0 4px 24px #aaa2;
       text-align: center;
     }
-    form {
-      display: grid;
-      gap: 1rem;
+    h2 {
+      margin-top: 0;
+      font-size: 1.25rem;
+      color: #31373a;
+      letter-spacing: 0.1em;
+    }
+    canvas {
+      display: block;
+      margin: 0 auto 10px auto;
+      border-radius: 16px;
+      box-shadow: 0 0 8px #aaa;
+      background: #eee;
     }
     label {
+      display: inline-block;
+      margin-top: 1em;
       font-weight: bold;
-    }
-    input, textarea, select {
-      width: 100%;
-      padding: 0.5rem;
       font-size: 1rem;
-      border-radius: 4px;
-      border: 1px solid #ccc;
-    }
-    button {
-      background-color: #333;
-      color: white;
-      padding: 0.75rem;
-      font-size: 1rem;
-      border: none;
-      border-radius: 4px;
       cursor: pointer;
+      color: #222;
     }
-    button:hover {
-      background-color: #555;
+    input[type="file"] {
+      margin-left: 8px;
+    }
+    .note {
+      font-size: 0.9em;
+      color: #888;
+      margin-top: 8px;
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>お問い合わせフォーム</h1>
-  </header>
+  <div class="container">
+    <h2>タンブラー レイアウトプレビュー</h2>
+    <canvas id="tumbler-canvas" width="260" height="400"></canvas>
+    <br>
+    <label>
+      レイアウト画像を選択　
+      <input type="file" id="image-upload" accept="image/*">
+    </label>
+    <div class="note">
+      ※ アップロードした画像はプレビューにのみ利用され、外部送信されません。
+    </div>
+  </div>
 
-  <main>
-    <form action="#" method="post" enctype="multipart/form-data">
-      <div>
-        <label for="name">お名前</label>
-        <input type="text" id="name" name="name" required>
-      </div>
-      <div>
-        <label for="email">メールアドレス</label>
-        <input type="email" id="email" name="email" required>
-      </div>
-      <div>
-        <label for="phone">電話番号</label>
-        <input type="tel" id="phone" name="phone">
-      </div>
-      <div>
-        <label for="summary">ご依頼内容の概要</label>
-        <textarea id="summary" name="summary" rows="4" required></textarea>
-      </div>
-      <div>
-        <label for="quantity">数量</label>
-        <input type="number" id="quantity" name="quantity" min="1">
-      </div>
-      <div>
-        <label for="delivery">希望納期</label>
-        <input type="date" id="delivery" name="delivery">
-      </div>
-      <div>
-        <label for="image">画像添付</label>
-        <input type="file" id="image" name="image">
-      </div>
-      <div>
-        <label for="comment">その他ご要望</label>
-        <textarea id="comment" name="comment" rows="3"></textarea>
-      </div>
-      <button type="submit">送信する</button>
-    </form>
-  </main>
+  <script>
+    // テンプレート画像のパス（同じフォルダの場合ファイル名のみでOK）
+    const tumblerImgSrc = "67a9bd50-6f8c-48f9-9556-dff30c898654.png";
+    const canvas = document.getElementById("tumbler-canvas");
+    const ctx = canvas.getContext("2d");
 
-  <footer>
-    <p>&copy; 2025 Harmolese</p>
-  </footer>
+    // タンブラー画像のロード
+    const tumblerImg = new Image();
+    tumblerImg.src = tumblerImgSrc;
+    tumblerImg.onload = () => {
+      drawAll();
+    };
+
+    let userImg = null; // ユーザーアップロード画像
+
+    // 画像アップロード処理
+    document.getElementById('image-upload').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        userImg = new Image();
+        userImg.onload = () => drawAll();
+        userImg.src = evt.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // 描画処理
+    function drawAll() {
+      // 背景クリア
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      // タンブラー画像描画
+      ctx.drawImage(tumblerImg, 0, 0, canvas.width, canvas.height);
+
+      // ユーザー画像も描画
+      if (userImg) {
+        // 幅160px、高さは比率維持、中央配置
+        const imgW = 160;
+        const imgH = 160 * (userImg.height / userImg.width);
+        const x = (canvas.width - imgW) / 2;
+        const y = 110; // タンブラー胴部
+        ctx.globalAlpha = 0.92; // 少し透過
+        ctx.drawImage(userImg, x, y, imgW, imgH);
+        ctx.globalAlpha = 1.0;
+      }
+    }
+  </script>
 </body>
 </html>
