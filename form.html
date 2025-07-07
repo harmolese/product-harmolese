@@ -5,25 +5,32 @@
   <title>タンブラー レイアウトプレビュー（無料メール送信対応）</title>
   <meta name="viewport" content="width=350,initial-scale=1.0">
   <style>
-    /* ...前のスタイル省略（必要なら貼り付けてください）... */
+    body {
+      font-family: sans-serif;
+      background: #f6f7fa;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
     .container { max-width: 400px; margin: 40px auto; background: #fff; padding: 2em 1.5em; border-radius: 12px; box-shadow: 0 4px 24px #aaa2; text-align: center; }
     .note { font-size: 0.9em; color: #888; margin-top: 8px; }
     textarea { width: 95%; border-radius: 8px; font-size: 1em; margin: 0.5em 0; }
     .ctrl-btn, .reset-btn { margin-top: 0.3em; }
     #save-btn { margin-bottom: 1em; padding: 0.4em 1.2em; border-radius: 8px; background: #9ec9e8; color: #233; border: 1px solid #bbb; cursor: pointer; }
     #save-btn:active { background: #7fb7da; }
+    canvas { display: block; margin: 0 auto 10px auto; border-radius: 16px; box-shadow: 0 0 8px #aaa; background: #eee; }
   </style>
 </head>
 <body>
   <div class="container">
     <h2>タンブラー レイアウトプレビュー</h2>
     <canvas id="tumbler-canvas" width="260" height="400"></canvas>
-    <!-- ここに画像移動・拡大縮小ボタンやドラッグ＆ホイールJSも追加できます（省略） -->
+    <!-- 画像を保存ボタン -->
     <div style="margin:1em 0;">
       <button id="save-btn" title="プレビュー画像を保存">画像を保存</button>
     </div>
-    <!-- フォーム部。actionはFormspreeで発行されたURLに置き換えてください -->
-    <form id="contact-form" action="https://formspree.io/f/あなたのID" method="POST">
+    <!-- メール送信フォーム -->
+    <form id="contact-form" action="https://formspree.io/f/mvgrnnpp" method="POST">
       <textarea id="bikou" name="message" rows="3" placeholder="備考欄：ご要望や連絡先等" required></textarea>
       <input type="hidden" name="_subject" value="タンブラー彫刻">
       <input type="hidden" name="_replyto" value="ryuji.hirashiki@gmail.com">
@@ -48,7 +55,7 @@
       a.download = "tumbler_layout.png";
       a.click();
     };
-    // ...移動・拡大縮小・ドラッグ・ホイールなどのJSは前のサンプルと同様に追加OK...
+    // ★ ここに「画像移動・拡大縮小・ドラッグ&ホイール」などのJSを追加してご利用ください ★
   </script>
 </body>
 </html>
