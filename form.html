@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>タンブラー レイアウトプレビュー（全機能版）</title>
+  <title>タンブラー レイアウトプレビュー（全機能・最新版）</title>
   <meta name="viewport" content="width=350,initial-scale=1.0">
   <style>
     body {
@@ -25,13 +25,25 @@
     #save-btn { margin-bottom: 1em; padding: 0.4em 1.2em; border-radius: 8px; background: #9ec9e8; color: #233; border: 1px solid #bbb; cursor: pointer; }
     #save-btn:active { background: #7fb7da; }
     canvas { display: block; margin: 0 auto 10px auto; border-radius: 16px; box-shadow: 0 0 8px #aaa; background: #eee; cursor: grab; touch-action: none; }
+    .file-upload { margin: 1em 0; }
+    .file-upload label { font-weight: bold; font-size: 1rem; cursor: pointer; color: #222; }
+    .file-upload input[type="file"] { margin-left: 8px; }
   </style>
 </head>
 <body>
   <div class="container">
     <h2>タンブラー レイアウトプレビュー</h2>
     <canvas id="tumbler-canvas" width="260" height="400"></canvas>
-    <!-- マウス・ボタン操作コントロール -->
+    
+    <!-- ファイルを選択（レイアウト画像アップロード） -->
+    <div class="file-upload">
+      <label>
+        レイアウト画像を選択　
+        <input type="file" id="image-upload" accept="image/*">
+      </label>
+    </div>
+    
+    <!-- コントロールボタン -->
     <div class="controls">
       <div class="ctrl-row">
         <button class="ctrl-btn" id="move-up" title="上へ">↑</button>
@@ -47,10 +59,12 @@
       </div>
       <button class="reset-btn" id="reset-btn" title="リセット">リセット</button>
     </div>
+    
     <!-- 画像を保存ボタン -->
     <div style="margin:1em 0;">
       <button id="save-btn" title="プレビュー画像を保存">画像を保存</button>
     </div>
+    
     <!-- メール送信フォーム -->
     <form id="contact-form" action="https://formspree.io/f/mvgrnnpp" method="POST">
       <textarea id="bikou" name="message" rows="3" placeholder="備考欄：ご要望や連絡先等" required></textarea>
@@ -58,10 +72,7 @@
       <input type="hidden" name="_replyto" value="ryuji.hirashiki@gmail.com">
       <button type="submit" class="reset-btn" style="background:#379;color:#fff;">完了</button>
     </form>
-    <label>
-      レイアウト画像を選択　
-      <input type="file" id="image-upload" accept="image/*">
-    </label>
+    
     <div class="note">
       ※画像の自動添付メール送信は無料ではできません。<br>
       ※「画像を保存」でプレビュー画像を保存→ご自身でメール添付してください。<br>
@@ -214,9 +225,6 @@
       userPos.scale = newScale;
       drawAll();
     });
-
-    // --- 初回描画
-    //tumblerImg.onload = () => { calcTumblerDrawInfo(); drawAll(); };
   </script>
 </body>
 </html>
