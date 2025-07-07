@@ -47,15 +47,79 @@
     </div>
   </div>
   <script>
+    // テンプレート画像のパス（必ずHTMLと同じ場所に！）
+    const tumblerImgSrc = "67a9bd50-6f8c-48f9-9556-dff30c898654.png";
+    const canvas = document.getElementById("tumbler-canvas");
+    const ctx = canvas.getContext("2d");
+    let tumblerImg = new Image();
+    let tDraw = { x: 0, y: 0, w: 0, h: 0 };
+    let userImg = null;
+    let userPos = { x: 0, y: 0, scale: 1 };
+    let defaultPos = { x: 0, y: 0, scale: 1 };
+
+    // テンプレ画像をcanvas中央・縦横比維持で描画
+    function calcTumblerDrawInfo() {
+      const cW = canvas.width, cH = canvas.height;
+      const iW = tumblerImg.width, iH = tumblerImg.height;
+      const scale = Math.min(cW / iW, cH / iH);
+      const drawW = iW * scale;
+      const drawH = iH * scale;
+      const offsetX = (cW - drawW) / 2;
+      const offsetY = (cH - drawH) / 2;
+      tDraw = { x: offsetX, y: offsetY, w: drawW, h: drawH };
+    }
+    function resetUserPos() {
+      if (!userImg) return;
+      const imgW = 160;
+      const imgH = 160 * (userImg.height / userImg.width);
+      const x = tDraw.x + (tDraw.w - imgW) / 2;
+      const y = tDraw.y + (tDraw.h - imgH) / 2 + 30;
+      userPos = { x: x, y: y, scale: 1 };
+      defaultPos = { ...userPos };
+    }
+    function drawAll() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      calcTumblerDrawInfo();
+      ctx.drawImage(tumblerImg, tDraw.x, tDraw.y, tDraw.w, tDraw.h);
+      if (userImg) {
+        const baseW = 160 * userPos.scale;
+        const baseH = (160 * (userImg.height / userImg.width)) * userPos.scale;
+        ctx.globalAlpha = 0.92;
+        ctx.drawImage(userImg, userPos.x, userPos.y, baseW, baseH);
+        ctx.globalAlpha = 1.0;
+      }
+    }
+
+    // テンプレ画像のロード
+    tumblerImg.onload = () => { drawAll(); };
+    tumblerImg.src = tumblerImgSrc;
+
     // 画像保存ボタン
     document.getElementById('save-btn').onclick = function() {
-      const canvas = document.getElementById("tumbler-canvas");
       const a = document.createElement('a');
       a.href = canvas.toDataURL("image/png");
       a.download = "tumbler_layout.png";
       a.click();
     };
-    // ★ ここに「画像移動・拡大縮小・ドラッグ&ホイール」などのJSを追加してご利用ください ★
+
+    // アップロード画像処理
+    document.getElementById('image-upload').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        userImg = new Image();
+        userImg.onload = () => {
+          calcTumblerDrawInfo();
+          resetUserPos();
+          drawAll();
+        };
+        userImg.src = evt.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // ※必要に応じて移動・拡大縮小・ドラッグ等のJSも追加
   </script>
 </body>
 </html>
