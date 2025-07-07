@@ -2,31 +2,97 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>タンブラー レイアウトプレビュー（全機能・最新版）</title>
+  <title>タンブラー レイアウトプレビュー（黒背景版）</title>
   <meta name="viewport" content="width=350,initial-scale=1.0">
   <style>
     body {
       font-family: sans-serif;
-      background: #f6f7fa;
-      color: #333;
+      background: #000;   /* 外側も黒 */
+      color: #fff;
       margin: 0;
       padding: 0;
     }
-    .container { max-width: 400px; margin: 40px auto; background: #fff; padding: 2em 1.5em; border-radius: 12px; box-shadow: 0 4px 24px #aaa2; text-align: center; }
-    .note { font-size: 0.9em; color: #888; margin-top: 8px; }
-    textarea { width: 95%; border-radius: 8px; font-size: 1em; margin: 0.5em 0; }
+    .container { 
+      max-width: 400px;
+      margin: 40px auto;
+      background: #000;   /* 本体も黒 */
+      color: #fff;        /* 本体内文字も白 */
+      padding: 2em 1.5em;
+      border-radius: 12px;
+      box-shadow: 0 4px 24px #222a;
+      text-align: center;
+    }
+    .note {
+      font-size: 0.9em;
+      color: #ccc;
+      margin-top: 8px;
+    }
+    textarea, input[type="text"], input[type="email"], input[type="tel"] {
+      width: 95%;
+      border-radius: 8px;
+      font-size: 1em;
+      margin-bottom: 0.5em;
+      padding: 0.5em;
+      border: 1px solid #333;
+      background: #181818;
+      color: #fff;
+    }
+    textarea::placeholder,
+    input::placeholder {
+      color: #aaa;
+    }
     .controls { margin: 1em 0; display: flex; flex-direction: column; align-items: center; gap: 0.2em; }
     .ctrl-row { display: flex; justify-content: center; gap: 0.5em; margin-bottom: 2px; }
     .ctrl-row:last-child { margin-bottom: 0; }
-    button.ctrl-btn { font-size: 1.3em; width: 2.2em; height: 2.2em; border-radius: 8px; border: 1px solid #ccc; background: #f8f8f8; cursor: pointer; transition: background 0.2s; }
-    button.ctrl-btn:active { background: #e0e0e0; }
-    button.reset-btn { font-size: 1em; margin-top: 0.5em; padding: 0.4em 1.2em; border-radius: 8px; background: #eee; border: 1px solid #bbb; cursor: pointer; }
-    button.reset-btn:active { background: #ddd; }
-    #save-btn { margin-bottom: 1em; padding: 0.4em 1.2em; border-radius: 8px; background: #9ec9e8; color: #233; border: 1px solid #bbb; cursor: pointer; }
+    button.ctrl-btn {
+      font-size: 1.3em;
+      width: 2.2em;
+      height: 2.2em;
+      border-radius: 8px;
+      border: 1px solid #444;
+      background: #181818;
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button.ctrl-btn:active { background: #282828; }
+    button.reset-btn {
+      font-size: 1em;
+      margin-top: 0.5em;
+      padding: 0.4em 1.2em;
+      border-radius: 8px;
+      background: #181818;
+      color: #fff;
+      border: 1px solid #444;
+      cursor: pointer;
+    }
+    button.reset-btn:active { background: #282828; }
+    #save-btn {
+      margin-bottom: 1em;
+      padding: 0.4em 1.2em;
+      border-radius: 8px;
+      background: #9ec9e8;
+      color: #000;
+      border: 1px solid #bbb;
+      cursor: pointer;
+    }
     #save-btn:active { background: #7fb7da; }
-    canvas { display: block; margin: 0 auto 10px auto; border-radius: 16px; box-shadow: 0 0 8px #aaa; background: #eee; cursor: grab; touch-action: none; }
+    canvas {
+      display: block;
+      margin: 0 auto 10px auto;
+      border-radius: 16px;
+      box-shadow: 0 0 8px #222;
+      background: #eee;
+      cursor: grab;
+      touch-action: none;
+    }
     .file-upload { margin: 1em 0; }
-    .file-upload label { font-weight: bold; font-size: 1rem; cursor: pointer; color: #222; }
+    .file-upload label {
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      color: #fff;
+    }
     .file-upload input[type="file"] { margin-left: 8px; }
   </style>
 </head>
@@ -65,8 +131,12 @@
       <button id="save-btn" title="プレビュー画像を保存">画像を保存</button>
     </div>
     
-    <!-- メール送信フォーム -->
+    <!-- フォーム（氏名・電話番号・メール・お届け先・備考） -->
     <form id="contact-form" action="https://formspree.io/f/mvgrnnpp" method="POST">
+      <input type="text" name="name" placeholder="氏名" required>
+      <input type="tel" name="tel" placeholder="電話番号" required>
+      <input type="email" name="email" placeholder="メールアドレス" required>
+      <input type="text" name="address" placeholder="お届け先" required>
       <textarea id="bikou" name="message" rows="3" placeholder="備考欄：ご要望や連絡先等" required></textarea>
       <input type="hidden" name="_subject" value="タンブラー彫刻">
       <input type="hidden" name="_replyto" value="ryuji.hirashiki@gmail.com">
