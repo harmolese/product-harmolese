@@ -2,21 +2,21 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>タンブラー レイアウトプレビュー（黒背景版）</title>
+  <title>タンブラー レイアウトプレビュー（黒背景・Backボタン付き）</title>
   <meta name="viewport" content="width=350,initial-scale=1.0">
   <style>
     body {
       font-family: sans-serif;
-      background: #000;   /* 外側も黒 */
+      background: #000;
       color: #fff;
       margin: 0;
       padding: 0;
     }
-    .container { 
+    .container {
       max-width: 400px;
       margin: 40px auto;
-      background: #000;   /* 本体も黒 */
-      color: #fff;        /* 本体内文字も白 */
+      background: #000;
+      color: #fff;
       padding: 2em 1.5em;
       border-radius: 12px;
       box-shadow: 0 4px 24px #222a;
@@ -94,6 +94,24 @@
       color: #fff;
     }
     .file-upload input[type="file"] { margin-left: 8px; }
+    .back-btn-area {
+      margin-top: 2em;
+    }
+    .back-btn-area button {
+      padding: 0.5em 2em;
+      font-size: 1em;
+      border-radius: 8px;
+      border: 1px solid #666;
+      background: #232323;
+      color: #fff;
+      cursor: pointer;
+      letter-spacing: 0.1em;
+      box-shadow: 0 2px 8px #111a;
+      transition: background 0.2s;
+    }
+    .back-btn-area button:active {
+      background: #333;
+    }
   </style>
 </head>
 <body>
@@ -142,7 +160,14 @@
       <input type="hidden" name="_replyto" value="ryuji.hirashiki@gmail.com">
       <button type="submit" class="reset-btn" style="background:#379;color:#fff;">完了</button>
     </form>
-    
+
+    <!-- Backボタン -->
+    <div class="back-btn-area">
+      <a href="index.html">
+        <button type="button">Back</button>
+      </a>
+    </div>
+
     <div class="note">
       ※画像の自動添付メール送信は無料ではできません。<br>
       ※「画像を保存」でプレビュー画像を保存→ご自身でメール添付してください。<br>
