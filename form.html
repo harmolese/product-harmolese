@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>タンブラー レイアウトプレビュー</title>
+  <title>タンブラー レイアウトプレビュー（マウス操作対応）</title>
   <meta name="viewport" content="width=350,initial-scale=1.0">
   <style>
     body {
@@ -33,6 +33,8 @@
       border-radius: 16px;
       box-shadow: 0 0 8px #aaa;
       background: #eee;
+      cursor: grab;
+      touch-action: none;
     }
     label {
       display: inline-block;
@@ -49,33 +51,6 @@
       font-size: 0.9em;
       color: #888;
       margin-top: 8px;
-    }
-    .controls {
-      margin: 1em 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.2em;
-    }
-    .ctrl-row {
-      display: flex;
-      justify-content: center;
-      gap: 0.5em;
-      margin-bottom: 2px;
-    }
-    .ctrl-row:last-child { margin-bottom: 0; }
-    button.ctrl-btn {
-      font-size: 1.3em;
-      width: 2.2em;
-      height: 2.2em;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      background: #f8f8f8;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    button.ctrl-btn:active {
-      background: #e0e0e0;
     }
     button.reset-btn {
       font-size: 1em;
@@ -95,26 +70,13 @@
   <div class="container">
     <h2>タンブラー レイアウトプレビュー</h2>
     <canvas id="tumbler-canvas" width="260" height="400"></canvas>
-    <div class="controls">
-      <div class="ctrl-row">
-        <button class="ctrl-btn" id="move-up" title="上へ">↑</button>
-      </div>
-      <div class="ctrl-row">
-        <button class="ctrl-btn" id="move-left" title="左へ">←</button>
-        <button class="ctrl-btn" id="zoom-in" title="拡大">＋</button>
-        <button class="ctrl-btn" id="zoom-out" title="縮小">－</button>
-        <button class="ctrl-btn" id="move-right" title="右へ">→</button>
-      </div>
-      <div class="ctrl-row">
-        <button class="ctrl-btn" id="move-down" title="下へ">↓</button>
-      </div>
-      <button class="reset-btn" id="reset-btn" title="リセット">リセット</button>
-    </div>
+    <button class="reset-btn" id="reset-btn" title="リセット">リセット</button>
     <label>
       レイアウト画像を選択　
       <input type="file" id="image-upload" accept="image/*">
     </label>
     <div class="note">
+      ※ 画像はドラッグで移動、ホイールで拡大縮小できます。<br>
       ※ アップロードした画像はプレビューにのみ利用され、外部送信されません。
     </div>
   </div>
@@ -123,21 +85,15 @@
     const tumblerImgSrc = "67a9bd50-6f8c-48f9-9556-dff30c898654.png";
     const canvas = document.getElementById("tumbler-canvas");
     const ctx = canvas.getContext("2d");
-    const MOVE_STEP = 10;
-    const SCALE_STEP = 0.08;
 
+    // テンプレ画像情報
     let tumblerImg = new Image();
     tumblerImg.src = tumblerImgSrc;
-    tumblerImg.onload = () => { drawAll(); };
+    let tDraw = { x: 0, y: 0, w: 0, h: 0 };
 
     let userImg = null;
     let userPos = { x: 0, y: 0, scale: 1 };
-
-    // 初期値を記録（タンブラー中央付近＋拡大率1）
     let defaultPos = { x: 0, y: 0, scale: 1 };
-
-    // テンプレ画像の表示情報（比率維持で中央配置）
-    let tDraw = { x: 0, y: 0, w: 0, h: 0 };
 
     function calcTumblerDrawInfo() {
       const cW = canvas.width, cH = canvas.height;
@@ -151,13 +107,11 @@
     }
 
     function resetUserPos() {
-      // 画像未アップロード時は何もしない
       if (!userImg) return;
-      // 幅160px（比率維持）、タンブラー中央あたり
       const imgW = 160;
       const imgH = 160 * (userImg.height / userImg.width);
       const x = tDraw.x + (tDraw.w - imgW) / 2;
-      const y = tDraw.y + (tDraw.h - imgH) / 2 + 30; // ここでYを微調整
+      const y = tDraw.y + (tDraw.h - imgH) / 2 + 30;
       userPos = { x: x, y: y, scale: 1 };
       defaultPos = { ...userPos };
     }
@@ -183,7 +137,6 @@
       calcTumblerDrawInfo();
       ctx.drawImage(tumblerImg, tDraw.x, tDraw.y, tDraw.w, tDraw.h);
       if (userImg) {
-        // 幅160px（比率維持）→ 拡大縮小対応
         const baseW = 160 * userPos.scale;
         const baseH = (160 * (userImg.height / userImg.width)) * userPos.scale;
         ctx.globalAlpha = 0.92;
@@ -192,18 +145,68 @@
       }
     }
 
-    // 各種ボタン操作
-    document.getElementById('move-up').onclick = () => { userPos.y -= MOVE_STEP; drawAll(); }
-    document.getElementById('move-down').onclick = () => { userPos.y += MOVE_STEP; drawAll(); }
-    document.getElementById('move-left').onclick = () => { userPos.x -= MOVE_STEP; drawAll(); }
-    document.getElementById('move-right').onclick = () => { userPos.x += MOVE_STEP; drawAll(); }
-    document.getElementById('zoom-in').onclick = () => { userPos.scale *= (1 + SCALE_STEP); drawAll(); }
-    document.getElementById('zoom-out').onclick = () => {
-      userPos.scale /= (1 + SCALE_STEP);
-      if(userPos.scale < 0.2) userPos.scale = 0.2; // 最小拡大率
+    // --- マウス操作 ---
+    let dragging = false;
+    let dragOffset = { x: 0, y: 0 };
+
+    canvas.addEventListener('mousedown', function(e) {
+      if (!userImg) return;
+      const rect = canvas.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
+      const baseW = 160 * userPos.scale;
+      const baseH = (160 * (userImg.height / userImg.width)) * userPos.scale;
+      // 画像の範囲内をクリックした場合のみドラッグ開始
+      if (
+        mouseX >= userPos.x && mouseX <= userPos.x + baseW &&
+        mouseY >= userPos.y && mouseY <= userPos.y + baseH
+      ) {
+        dragging = true;
+        dragOffset.x = mouseX - userPos.x;
+        dragOffset.y = mouseY - userPos.y;
+        canvas.style.cursor = "grabbing";
+      }
+    });
+
+    canvas.addEventListener('mousemove', function(e) {
+      if (!userImg || !dragging) return;
+      const rect = canvas.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
+      userPos.x = mouseX - dragOffset.x;
+      userPos.y = mouseY - dragOffset.y;
       drawAll();
-    }
-    document.getElementById('reset-btn').onclick = () => { userPos = { ...defaultPos }; drawAll(); }
+    });
+
+    window.addEventListener('mouseup', function() {
+      dragging = false;
+      canvas.style.cursor = "grab";
+    });
+
+    // ホイールで拡大縮小
+    canvas.addEventListener('wheel', function(e) {
+      if (!userImg) return;
+      e.preventDefault();
+      let oldScale = userPos.scale;
+      let newScale = userPos.scale * (e.deltaY < 0 ? 1.08 : 1 / 1.08);
+      if (newScale < 0.2) newScale = 0.2;
+      if (newScale > 6.0) newScale = 6.0;
+
+      // 画像の中心を維持して拡大縮小（マウス座標に合わせてもOK）
+      const baseW = 160 * userPos.scale;
+      const baseH = (160 * (userImg.height / userImg.width)) * userPos.scale;
+      const centerX = userPos.x + baseW / 2;
+      const centerY = userPos.y + baseH / 2;
+      const newBaseW = 160 * newScale;
+      const newBaseH = (160 * (userImg.height / userImg.width)) * newScale;
+      userPos.x = centerX - newBaseW / 2;
+      userPos.y = centerY - newBaseH / 2;
+      userPos.scale = newScale;
+      drawAll();
+    });
+
+    // リセット
+    document.getElementById('reset-btn').onclick = () => { userPos = { ...defaultPos }; drawAll(); };
 
     // 初回描画
     tumblerImg.onload = () => {
