@@ -50,13 +50,66 @@
       color: #888;
       margin-top: 8px;
     }
+    .controls {
+      margin: 1em 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.2em;
+    }
+    .ctrl-row {
+      display: flex;
+      justify-content: center;
+      gap: 0.5em;
+      margin-bottom: 2px;
+    }
+    .ctrl-row:last-child { margin-bottom: 0; }
+    button.ctrl-btn {
+      font-size: 1.3em;
+      width: 2.2em;
+      height: 2.2em;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      background: #f8f8f8;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button.ctrl-btn:active {
+      background: #e0e0e0;
+    }
+    button.reset-btn {
+      font-size: 1em;
+      margin-top: 0.5em;
+      padding: 0.4em 1.2em;
+      border-radius: 8px;
+      background: #eee;
+      border: 1px solid #bbb;
+      cursor: pointer;
+    }
+    button.reset-btn:active {
+      background: #ddd;
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <h2>タンブラー レイアウトプレビュー</h2>
     <canvas id="tumbler-canvas" width="260" height="400"></canvas>
-    <br>
+    <div class="controls">
+      <div class="ctrl-row">
+        <button class="ctrl-btn" id="move-up" title="上へ">↑</button>
+      </div>
+      <div class="ctrl-row">
+        <button class="ctrl-btn" id="move-left" title="左へ">←</button>
+        <button class="ctrl-btn" id="zoom-in" title="拡大">＋</button>
+        <button class="ctrl-btn" id="zoom-out" title="縮小">－</button>
+        <button class="ctrl-btn" id="move-right" title="右へ">→</button>
+      </div>
+      <div class="ctrl-row">
+        <button class="ctrl-btn" id="move-down" title="下へ">↓</button>
+      </div>
+      <button class="reset-btn" id="reset-btn" title="リセット">リセット</button>
+    </div>
     <label>
       レイアウト画像を選択　
       <input type="file" id="image-upload" accept="image/*">
@@ -67,52 +120,96 @@
   </div>
 
   <script>
-    // テンプレート画像のパス（同じフォルダの場合ファイル名のみでOK）
     const tumblerImgSrc = "67a9bd50-6f8c-48f9-9556-dff30c898654.png";
     const canvas = document.getElementById("tumbler-canvas");
     const ctx = canvas.getContext("2d");
+    const MOVE_STEP = 10;
+    const SCALE_STEP = 0.08;
 
-    // タンブラー画像のロード
-    const tumblerImg = new Image();
+    let tumblerImg = new Image();
     tumblerImg.src = tumblerImgSrc;
-    tumblerImg.onload = () => {
-      drawAll();
-    };
+    tumblerImg.onload = () => { drawAll(); };
 
-    let userImg = null; // ユーザーアップロード画像
+    let userImg = null;
+    let userPos = { x: 0, y: 0, scale: 1 };
 
-    // 画像アップロード処理
+    // 初期値を記録（タンブラー中央付近＋拡大率1）
+    let defaultPos = { x: 0, y: 0, scale: 1 };
+
+    // テンプレ画像の表示情報（比率維持で中央配置）
+    let tDraw = { x: 0, y: 0, w: 0, h: 0 };
+
+    function calcTumblerDrawInfo() {
+      const cW = canvas.width, cH = canvas.height;
+      const iW = tumblerImg.width, iH = tumblerImg.height;
+      const scale = Math.min(cW / iW, cH / iH);
+      const drawW = iW * scale;
+      const drawH = iH * scale;
+      const offsetX = (cW - drawW) / 2;
+      const offsetY = (cH - drawH) / 2;
+      tDraw = { x: offsetX, y: offsetY, w: drawW, h: drawH };
+    }
+
+    function resetUserPos() {
+      // 画像未アップロード時は何もしない
+      if (!userImg) return;
+      // 幅160px（比率維持）、タンブラー中央あたり
+      const imgW = 160;
+      const imgH = 160 * (userImg.height / userImg.width);
+      const x = tDraw.x + (tDraw.w - imgW) / 2;
+      const y = tDraw.y + (tDraw.h - imgH) / 2 + 30; // ここでYを微調整
+      userPos = { x: x, y: y, scale: 1 };
+      defaultPos = { ...userPos };
+    }
+
     document.getElementById('image-upload').addEventListener('change', function(e) {
       const file = e.target.files[0];
       if (!file) return;
       const reader = new FileReader();
       reader.onload = function(evt) {
         userImg = new Image();
-        userImg.onload = () => drawAll();
+        userImg.onload = () => {
+          calcTumblerDrawInfo();
+          resetUserPos();
+          drawAll();
+        };
         userImg.src = evt.target.result;
       };
       reader.readAsDataURL(file);
     });
 
-    // 描画処理
     function drawAll() {
-      // 背景クリア
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      // タンブラー画像描画
-      ctx.drawImage(tumblerImg, 0, 0, canvas.width, canvas.height);
-
-      // ユーザー画像も描画
+      calcTumblerDrawInfo();
+      ctx.drawImage(tumblerImg, tDraw.x, tDraw.y, tDraw.w, tDraw.h);
       if (userImg) {
-        // 幅160px、高さは比率維持、中央配置
-        const imgW = 160;
-        const imgH = 160 * (userImg.height / userImg.width);
-        const x = (canvas.width - imgW) / 2;
-        const y = 110; // タンブラー胴部
-        ctx.globalAlpha = 0.92; // 少し透過
-        ctx.drawImage(userImg, x, y, imgW, imgH);
+        // 幅160px（比率維持）→ 拡大縮小対応
+        const baseW = 160 * userPos.scale;
+        const baseH = (160 * (userImg.height / userImg.width)) * userPos.scale;
+        ctx.globalAlpha = 0.92;
+        ctx.drawImage(userImg, userPos.x, userPos.y, baseW, baseH);
         ctx.globalAlpha = 1.0;
       }
     }
+
+    // 各種ボタン操作
+    document.getElementById('move-up').onclick = () => { userPos.y -= MOVE_STEP; drawAll(); }
+    document.getElementById('move-down').onclick = () => { userPos.y += MOVE_STEP; drawAll(); }
+    document.getElementById('move-left').onclick = () => { userPos.x -= MOVE_STEP; drawAll(); }
+    document.getElementById('move-right').onclick = () => { userPos.x += MOVE_STEP; drawAll(); }
+    document.getElementById('zoom-in').onclick = () => { userPos.scale *= (1 + SCALE_STEP); drawAll(); }
+    document.getElementById('zoom-out').onclick = () => {
+      userPos.scale /= (1 + SCALE_STEP);
+      if(userPos.scale < 0.2) userPos.scale = 0.2; // 最小拡大率
+      drawAll();
+    }
+    document.getElementById('reset-btn').onclick = () => { userPos = { ...defaultPos }; drawAll(); }
+
+    // 初回描画
+    tumblerImg.onload = () => {
+      calcTumblerDrawInfo();
+      drawAll();
+    };
   </script>
 </body>
 </html>
