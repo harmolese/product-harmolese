@@ -2,8 +2,10 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>タンブラー レイアウトプレビュー（確認画面・スマホ対応）</title>
+  <title>タンブラー レイアウトプレビュー（確認画面・スマホ対応・ファビコン）</title>
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <!-- ファビコン設定 -->
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon32_circle.png">
   <style>
     body {
       font-family: sans-serif;
@@ -131,8 +133,7 @@
       width: 390px;
       height: 600px;
       max-width: 98vw;
-      max-height: 65vw;
-      /* モバイルで自然に縮む */
+      /* 縦横比維持（スマホ用は下のメディアクエリで） */
     }
     .back-btn-area {
       margin-top: 2em;
@@ -203,9 +204,9 @@
       }
       canvas {
         width: 98vw;
-        height: auto;
         max-width: 98vw;
-        max-height: 65vw;
+        height: auto !important;
+        aspect-ratio: 13/20;
       }
       .control-area, .controls, .preview-area {
         width: 100%;
