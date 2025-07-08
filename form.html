@@ -35,26 +35,14 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      min-width: 120px;
-      margin-top: 0.6em;
+      min-width: 180px;
     }
-    .arrow-panel {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin-bottom: 0.5em;
-      gap: 0.3em;
-    }
-    .arrow-row {
-      display: flex;
-      gap: 0.3em;
-      margin-bottom: 0.1em;
-    }
-    .zoom-panel {
-      display: flex;
-      flex-direction: column;
-      gap: 0.3em;
-      margin-left: 0.4em;
+    .button-grid {
+      display: grid;
+      grid-template-columns: 48px 48px 48px 48px;
+      grid-template-rows: 48px 48px 48px;
+      gap: 0.4em;
+      margin-bottom: 1em;
     }
     .ctrl-btn {
       font-size: 1.5em; width: 48px; height: 48px;
@@ -65,6 +53,9 @@
       transition: background 0.15s, box-shadow 0.15s;
     }
     .ctrl-btn:active { background: #282828; }
+    .reset-row {
+      width: 100%; display: flex; justify-content: center;
+    }
     .reset-btn {
       font-size: 1.15em; padding: 0.7em 2em;
       border-radius: 10px; background: #181818; color: #fff; border: 1px solid #666;
@@ -124,23 +115,25 @@
         <canvas id="tumbler-canvas"></canvas>
       </div>
       <div class="control-panel">
-        <div class="arrow-panel">
-          <div class="arrow-row">
-            <button class="ctrl-btn" id="move-up" title="上へ">↑</button>
-          </div>
-          <div class="arrow-row">
-            <button class="ctrl-btn" id="move-left" title="左へ">←</button>
-            <div class="zoom-panel">
-              <button class="ctrl-btn" id="zoom-in" title="拡大">＋</button>
-              <button class="ctrl-btn" id="zoom-out" title="縮小">－</button>
-            </div>
-            <button class="ctrl-btn" id="move-right" title="右へ">→</button>
-          </div>
-          <div class="arrow-row">
-            <button class="ctrl-btn" id="move-down" title="下へ">↓</button>
-          </div>
+        <div class="button-grid">
+          <div></div>
+          <button class="ctrl-btn" id="move-up">↑</button>
+          <div></div>
+          <button class="ctrl-btn" id="zoom-in">＋</button>
+
+          <button class="ctrl-btn" id="move-left">←</button>
+          <button class="ctrl-btn" id="move-right">→</button>
+          <div></div>
+          <button class="ctrl-btn" id="zoom-out">－</button>
+
+          <div></div>
+          <button class="ctrl-btn" id="move-down">↓</button>
+          <div></div>
+          <div></div>
         </div>
-        <button class="reset-btn" id="reset-btn" title="リセット">リセット</button>
+        <div class="reset-row">
+          <button class="reset-btn" id="reset-btn">リセット</button>
+        </div>
         <div class="file-upload" style="margin-top:1.5em;">
           <label>
             レイアウト画像を選択　
