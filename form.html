@@ -2,9 +2,8 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>タンブラー レイアウトプレビュー（確認画面・スマホ対応・ファビコン）</title>
+  <title>タンブラー・テンプレート選択＆レイアウト</title>
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <!-- ファビコン設定 -->
   <link rel="icon" type="image/png" sizes="32x32" href="favicon32_circle.png">
   <style>
     body {
@@ -133,7 +132,10 @@
       width: 390px;
       height: 600px;
       max-width: 98vw;
-      /* 縦横比維持（スマホ用は下のメディアクエリで） */
+    }
+    .template-select-area {
+      margin-bottom: 1em;
+      text-align: center;
     }
     .back-btn-area {
       margin-top: 2em;
@@ -221,12 +223,18 @@
 <body>
   <div class="container">
     <h2>タンブラー レイアウトプレビュー</h2>
+    <div class="template-select-area">
+      <label for="template-select">テンプレート画像：</label>
+      <select id="template-select">
+        <option value="images/tumbler1.png">タンブラーA</option>
+        <option value="images/tumbler2.png">タンブラーB</option>
+        <!-- 必要に応じてここに追加 -->
+      </select>
+    </div>
     <div class="preview-controls">
-      <!-- レイアウトプレビューエリア -->
       <div class="preview-area">
         <canvas id="tumbler-canvas" width="390" height="600"></canvas>
       </div>
-      <!-- コントロール＋アップロード・保存ボタン -->
       <div class="control-area">
         <div class="controls">
           <div class="ctrl-row">
@@ -243,7 +251,6 @@
           </div>
           <button class="reset-btn" id="reset-btn" title="リセット">リセット</button>
         </div>
-        <!-- 操作ボタンの下にアップロードと保存ボタン -->
         <div class="file-upload">
           <label>
             レイアウト画像を選択　
@@ -253,7 +260,6 @@
         <button id="save-btn" title="プレビュー画像を保存">画像を保存</button>
       </div>
     </div>
-    <!-- フォーム -->
     <form id="contact-form" action="https://formspree.io/f/mvgrnnpp" method="POST">
       <input type="text" name="name" placeholder="氏名" required>
       <input type="tel" name="tel" placeholder="電話番号" required>
@@ -264,7 +270,6 @@
       <input type="hidden" name="_replyto" value="ryuji.hirashiki@gmail.com">
       <button type="button" class="reset-btn" style="background:#379;color:#fff;" id="confirm-btn">完了</button>
     </form>
-    <!-- Backボタン -->
     <div class="back-btn-area">
       <a href="index.html">
         <button type="button">Back</button>
@@ -276,7 +281,6 @@
       ※画像はドラッグで移動、ホイールで拡大縮小、上下左右・拡大縮小ボタンでも微調整できます。<br>
       ※「完了」ボタンで備考欄の内容のみ送信されます。
     </div>
-    <!-- 確認用モーダル -->
     <div id="confirm-modal">
       <div>
         <h3>内容のご確認</h3>
@@ -288,15 +292,25 @@
     </div>
   </div>
   <script>
-    // --- 基本定義
-    const tumblerImgSrc = "67a9bd50-6f8c-48f9-9556-dff30c898654.png";
+    // テンプレ画像選択用
+    const templateSelect = document.getElementById('template-select');
+    const tumblerImgList = [
+      "images/tumbler1.png", // option 1
+      "images/tumbler2.png", // option 2
+      // ここに追加
+    ];
+    let tumblerImgSrc = tumblerImgList[0];
+    templateSelect.onchange = function() {
+      tumblerImgSrc = templateSelect.value;
+      loadTumblerImage();
+    };
+
     const canvas = document.getElementById("tumbler-canvas");
     const ctx = canvas.getContext("2d");
     const MOVE_STEP = 15;
     const SCALE_STEP = 0.08;
 
     let tumblerImg = new Image();
-    tumblerImg.src = tumblerImgSrc;
     let tDraw = { x: 0, y: 0, w: 0, h: 0 };
 
     let userImg = null;
@@ -334,7 +348,13 @@
         ctx.globalAlpha = 1.0;
       }
     }
-    tumblerImg.onload = () => { drawAll(); };
+    function loadTumblerImage() {
+      tumblerImg = new Image();
+      tumblerImg.src = tumblerImgSrc;
+      tumblerImg.onload = () => { drawAll(); };
+    }
+    loadTumblerImage();
+
     document.getElementById('save-btn').onclick = function() {
       const a = document.createElement('a');
       a.href = canvas.toDataURL("image/png");
@@ -434,17 +454,12 @@
       const address = contactForm.elements['address'].value;
       const bikou = contactForm.elements['message'].value;
 
-      // バリデーション
       if (!name || !tel || !email || !address || !bikou) {
         alert("すべての項目を入力してください。");
         return;
       }
-
-      // canvasプレビュー
       const dataUrl = canvas.toDataURL("image/png");
       modalCanvasPreview.innerHTML = `<img src="${dataUrl}" alt="プレビュー画像">`;
-
-      // 入力内容プレビュー
       modalInputPreview.innerHTML = `
         <div><b>氏名：</b>${name}</div>
         <div><b>電話番号：</b>${tel}</div>
@@ -452,14 +467,11 @@
         <div><b>お届け先：</b>${address}</div>
         <div><b>備考：</b>${bikou.replace(/\n/g,"<br>")}</div>
       `;
-
       confirmModal.style.display = "flex";
     };
-
     cancelBtn.onclick = function() {
       confirmModal.style.display = "none";
     };
-
     sendBtn.onclick = function() {
       confirmModal.style.display = "none";
       contactForm.submit();
