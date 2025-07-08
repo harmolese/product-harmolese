@@ -19,6 +19,7 @@
       box-shadow: 0 4px 20px #222a; 
       cursor: grab; 
       touch-action: none;
+      transition: width 0.2s, height 0.2s;
     }
     .controls {
       display: flex; justify-content: center; gap: 0.7em; flex-wrap: wrap; margin: 1.2em 0 0.8em 0;
@@ -49,6 +50,12 @@
     @media (max-width: 700px) {
       .container { max-width: 99vw; padding: 1em 0.2em; }
       form { max-width: 99vw; padding: 1em 0.3em; }
+      #tumbler-canvas {
+        width: 80vw !important;
+        height: auto !important;
+        max-width: 96vw;
+        max-height: 80vh;
+      }
     }
   </style>
 </head>
@@ -120,8 +127,15 @@
       templateH = img.naturalHeight || img.height;
       canvas.width = templateW;
       canvas.height = templateH;
-      canvas.style.width = templateW + 'px';
-      canvas.style.height = templateH + 'px';
+
+      // スマホの場合はCSSでwidthだけ上書き
+      if(window.innerWidth < 700){
+        canvas.style.width = "80vw";
+        canvas.style.height = "auto";
+      } else {
+        canvas.style.width = templateW + 'px';
+        canvas.style.height = templateH + 'px';
+      }
     }
 
     function drawAll() {
@@ -164,6 +178,11 @@
 
     // 初回
     loadTemplate(templateSelect.value);
+
+    // ウィンドウリサイズ時もスマホ表示用CSS反映
+    window.addEventListener('resize', function(){
+      setCanvasSizeByImage(templateImg);
+    });
 
     // ユーザー画像アップロード
     document.getElementById('image-upload').addEventListener('change', function(e) {
