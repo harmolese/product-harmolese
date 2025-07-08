@@ -133,35 +133,6 @@
     let userPos = { x: 0, y: 0, scale: 1 };
     let defaultPos = { x: 0, y: 0, scale: 1 };
 
-    // 余白黒塗り画像を返す関数
-    function processTemplateImage(src, callback) {
-      let img = new Image();
-      img.crossOrigin = "anonymous";
-      img.onload = () => {
-        let tempCanvas = document.createElement('canvas');
-        tempCanvas.width = img.width;
-        tempCanvas.height = img.height;
-        let tempCtx = tempCanvas.getContext('2d');
-        tempCtx.drawImage(img, 0, 0);
-
-        let imageData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
-        let data = imageData.data;
-        for (let i = 0; i < data.length; i += 4) {
-          let r = data[i], g = data[i+1], b = data[i+2], a = data[i+3];
-          // α=0（透明）またはほぼ白（RGB>245）を黒に
-          if (a < 10 || (r > 245 && g > 245 && b > 245)) {
-            data[i] = 0; data[i+1] = 0; data[i+2] = 0; data[i+3] = 255;
-          }
-        }
-        tempCtx.putImageData(imageData, 0, 0);
-
-        let outImg = new Image();
-        outImg.onload = () => { callback(outImg); };
-        outImg.src = tempCanvas.toDataURL();
-      };
-      img.src = src + '?_=' + new Date().getTime();
-    }
-
     function calcTumblerDrawInfo() {
       const cW = canvas.width, cH = canvas.height;
       const iW = tumblerImg.width, iH = tumblerImg.height;
@@ -182,7 +153,10 @@
       defaultPos = { ...userPos };
     }
     function drawAll() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      // キャンバス全体を黒で塗る
+      ctx.fillStyle = "#000";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
       if (!tumblerImg.complete || tumblerImg.naturalWidth === 0) return;
       calcTumblerDrawInfo();
       ctx.drawImage(tumblerImg, tDraw.x, tDraw.y, tDraw.w, tDraw.h);
@@ -195,10 +169,9 @@
       }
     }
     function loadTumblerImage() {
-      processTemplateImage(tumblerImgSrc, function(processedImg){
-        tumblerImg = processedImg;
-        drawAll();
-      });
+      tumblerImg = new Image();
+      tumblerImg.onload = () => { drawAll(); };
+      tumblerImg.src = tumblerImgSrc + '?_=' + new Date().getTime();
     }
 
     // テンプレ切替時
