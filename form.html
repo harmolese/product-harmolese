@@ -133,12 +133,56 @@
     let userPos = { x: 0, y: 0, scale: 1 };
     let defaultPos = { x: 0, y: 0, scale: 1 };
 
-    function calcTumblerDrawInfo() {
+    // 画像の上下余白（白or透明）を自動トリミング
+    function trimImageVertically(src, callback) {
+      let img = new Image();
+      img.crossOrigin = "anonymous";
+      img.onload = () => {
+        let tmpCanvas = document.createElement('canvas');
+        tmpCanvas.width = img.width;
+        tmpCanvas.height = img.height;
+        let tmpCtx = tmpCanvas.getContext('2d');
+        tmpCtx.drawImage(img, 0, 0);
+
+        let imageData = tmpCtx.getImageData(0, 0, img.width, img.height);
+        let data = imageData.data;
+
+        // 上端検出
+        let top = 0, bottom = img.height - 1;
+        function isRowEmpty(y) {
+          for (let x = 0; x < img.width; x++) {
+            let i = (y * img.width + x) * 4;
+            let r = data[i], g = data[i+1], b = data[i+2], a = data[i+3];
+            if (!(a < 10 || (r > 245 && g > 245 && b > 245))) return false;
+          }
+          return true;
+        }
+        while (top < img.height && isRowEmpty(top)) top++;
+        while (bottom > top && isRowEmpty(bottom)) bottom--;
+
+        // トリミングする高さ
+        let trimHeight = bottom - top + 1;
+
+        // 新しいcanvasに本体部分だけdraw
+        let outCanvas = document.createElement('canvas');
+        outCanvas.width = img.width;
+        outCanvas.height = trimHeight;
+        let outCtx = outCanvas.getContext('2d');
+        outCtx.drawImage(img, 0, top, img.width, trimHeight, 0, 0, img.width, trimHeight);
+
+        // 新しいImageとして返す
+        let trimmedImg = new Image();
+        trimmedImg.onload = () => { callback(trimmedImg, img.width, trimHeight); };
+        trimmedImg.src = outCanvas.toDataURL();
+      };
+      img.src = src + '?_=' + new Date().getTime();
+    }
+
+    function calcTumblerDrawInfo(trimW, trimH) {
       const cW = canvas.width, cH = canvas.height;
-      const iW = tumblerImg.width, iH = tumblerImg.height;
-      const scale = Math.min(cW / iW, cH / iH);
-      const drawW = iW * scale;
-      const drawH = iH * scale;
+      const scale = Math.min(cW / trimW, cH / trimH);
+      const drawW = trimW * scale;
+      const drawH = trimH * scale;
       const offsetX = (cW - drawW) / 2;
       const offsetY = (cH - drawH) / 2;
       tDraw = { x: offsetX, y: offsetY, w: drawW, h: drawH };
@@ -152,13 +196,15 @@
       userPos = { x: x, y: y, scale: 1 };
       defaultPos = { ...userPos };
     }
+
+    let trimInfo = { w: 1, h: 1 }; // トリミング後の画像サイズ
+
     function drawAll() {
-      // キャンバス全体を黒で塗る
       ctx.fillStyle = "#000";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       if (!tumblerImg.complete || tumblerImg.naturalWidth === 0) return;
-      calcTumblerDrawInfo();
+      calcTumblerDrawInfo(trimInfo.w, trimInfo.h);
       ctx.drawImage(tumblerImg, tDraw.x, tDraw.y, tDraw.w, tDraw.h);
       if (userImg) {
         const baseW = 240 * userPos.scale;
@@ -168,10 +214,14 @@
         ctx.globalAlpha = 1.0;
       }
     }
+
     function loadTumblerImage() {
-      tumblerImg = new Image();
-      tumblerImg.onload = () => { drawAll(); };
-      tumblerImg.src = tumblerImgSrc + '?_=' + new Date().getTime();
+      trimImageVertically(tumblerImgSrc, function(trimmedImg, w, h) {
+        tumblerImg = trimmedImg;
+        trimInfo.w = w;
+        trimInfo.h = h;
+        drawAll();
+      });
     }
 
     // テンプレ切替時
@@ -196,7 +246,7 @@
       reader.onload = function(evt) {
         userImg = new Image();
         userImg.onload = () => {
-          calcTumblerDrawInfo();
+          calcTumblerDrawInfo(trimInfo.w, trimInfo.h);
           resetUserPos();
           drawAll();
         };
