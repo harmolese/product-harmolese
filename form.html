@@ -79,6 +79,14 @@
     .back-btn-area button { padding: 0.5em 2em; font-size: 1em; border-radius: 8px; border: 1px solid #666; background: #232323; color: #fff; cursor: pointer; }
     .back-btn-area button:active { background: #333; }
     .note { font-size: 0.91em; color: #ccc; margin: 20px 0 0 0; text-align: center;}
+    /* 確認モーダル */
+    #confirm-modal {
+      display:none; position:fixed; z-index:2000; left:0; top:0; width:100vw; height:100vh; background:#000a;
+    }
+    #confirm-modal-inner {
+      background:#222; color:#fff; border-radius:12px; max-width:400px; margin:60px auto 0 auto; padding:2em 1.4em; box-shadow:0 8px 32px #000b;
+    }
+    #confirm-content { font-size:1em; margin-bottom:1.2em; }
     @media (max-width: 900px) {
       .container { max-width: 99vw; }
       .preview-controls-wrap { gap: 1.1em; }
@@ -97,6 +105,7 @@
         align-items: center;
       }
       .control-panel { min-width: unset; width: 98vw; }
+      #confirm-modal-inner { max-width:90vw; }
     }
   </style>
 </head>
@@ -127,13 +136,11 @@
           <div></div>
           <div></div>
           <button class="ctrl-btn" id="zoom-in">＋</button>
-
           <button class="ctrl-btn" id="move-left">←</button>
           <div></div>
           <button class="ctrl-btn" id="move-right">→</button>
           <div></div>
           <button class="ctrl-btn" id="zoom-out">－</button>
-
           <div></div>
           <button class="ctrl-btn" id="move-down">↓</button>
           <div></div>
@@ -154,7 +161,7 @@
       <textarea id="bikou" name="message" rows="3" placeholder="備考欄：ご要望や連絡先等" required></textarea>
       <input type="hidden" name="_subject" value="タンブラー彫刻">
       <input type="hidden" name="_replyto" value="ryuji.hirashiki@gmail.com">
-      <button type="submit" class="reset-btn" style="background:#379;color:#fff;">完了</button>
+      <button type="submit" class="reset-btn" style="background:#379;color:#fff;">確認画面へ</button>
     </form>
     <div class="back-btn-area">
       <a href="index.html">
@@ -166,6 +173,17 @@
       ※「画像を保存」でプレビュー画像を保存→ご自身でメール添付してください。<br>
       ※画像はドラッグで移動、ホイールで拡大縮小、ボタンでも微調整できます。<br>
       ※レイアウト画像の移動・拡大縮小はテンプレート画像の範囲内のみです。
+    </div>
+  </div>
+  <!-- 確認モーダル -->
+  <div id="confirm-modal">
+    <div id="confirm-modal-inner">
+      <h3 style="margin-top:0;text-align:center;">この内容で送信しますか？</h3>
+      <div id="confirm-content" style="font-size:1em; margin-bottom:1.2em;"></div>
+      <div style="text-align:center;">
+        <button id="confirm-ok" style="padding:0.5em 2em; margin-right:1em;">送信</button>
+        <button id="confirm-cancel" style="padding:0.5em 2em;">キャンセル</button>
+      </div>
     </div>
   </div>
   <script>
@@ -345,6 +363,47 @@
       a.download = "tumbler_layout.png";
       a.click();
     };
+
+    // --- 確認画面モーダル ---
+    const form = document.getElementById('contact-form');
+    const confirmModal = document.getElementById('confirm-modal');
+    const confirmContent = document.getElementById('confirm-content');
+    const confirmOk = document.getElementById('confirm-ok');
+    const confirmCancel = document.getElementById('confirm-cancel');
+    let sendFlag = false;
+
+    form.addEventListener('submit', function(e) {
+      if (sendFlag) {
+        sendFlag = false;
+        return;
+      }
+      e.preventDefault();
+
+      // 入力値を取得
+      const fd = new FormData(form);
+      // 入力内容を確認用に整形
+      let msg = `<b>氏名：</b>${fd.get('name')}<br>`;
+      msg += `<b>電話番号：</b>${fd.get('tel')}<br>`;
+      msg += `<b>メールアドレス：</b>${fd.get('email')}<br>`;
+      msg += `<b>お届け先：</b>${fd.get('address')}<br>`;
+      msg += `<b>備考：</b><br>${fd.get('message') ? fd.get('message').replace(/\n/g,"<br>") : ""}<br>`;
+      confirmContent.innerHTML = msg;
+
+      // モーダルを表示
+      confirmModal.style.display = "block";
+    });
+
+    // モーダルOK→本送信
+    confirmOk.addEventListener('click', function() {
+      sendFlag = true;
+      confirmModal.style.display = "none";
+      form.requestSubmit();
+    });
+
+    // キャンセル
+    confirmCancel.addEventListener('click', function() {
+      confirmModal.style.display = "none";
+    });
   </script>
 </body>
 </html>
