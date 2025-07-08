@@ -63,9 +63,9 @@
       box-shadow: 0 2px 6px #0005;
     }
     .reset-btn:active { background: #282828; }
-    .file-upload { margin: 1.3em 0 0.3em 0; text-align: center; }
+    .file-upload { margin-bottom: 1.3em; text-align: center; }
     .file-upload label { font-size: 1em; font-weight: bold; }
-    #save-btn { margin: 0.5em 0 1.3em 0; padding: 0.4em 1.2em; border-radius: 8px; background: #9ec9e8; color: #000; border: 1px solid #bbb; cursor: pointer; }
+    #save-btn { margin: 1.2em 0 1.3em 0; padding: 0.4em 1.2em; border-radius: 8px; background: #9ec9e8; color: #000; border: 1px solid #bbb; cursor: pointer; }
     #save-btn:active { background: #7fb7da; }
     form { background: #101010; border-radius: 12px; box-shadow: 0 0 12px #1118; padding: 1.3em 1em; margin: 2em auto 0 auto; max-width: 430px; }
     input[type="text"], input[type="email"], input[type="tel"], textarea {
@@ -115,6 +115,12 @@
         <canvas id="tumbler-canvas"></canvas>
       </div>
       <div class="control-panel">
+        <div class="file-upload">
+          <label>
+            レイアウト画像を選択　
+            <input type="file" id="image-upload" accept="image/*">
+          </label>
+        </div>
         <div class="button-grid">
           <div></div>
           <button class="ctrl-btn" id="move-up">↑</button>
@@ -136,12 +142,6 @@
         </div>
         <div class="reset-row">
           <button class="reset-btn" id="reset-btn">リセット</button>
-        </div>
-        <div class="file-upload" style="margin-top:1.5em;">
-          <label>
-            レイアウト画像を選択　
-            <input type="file" id="image-upload" accept="image/*">
-          </label>
         </div>
         <button id="save-btn" title="プレビュー画像を保存">画像を保存</button>
       </div>
