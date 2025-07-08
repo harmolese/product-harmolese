@@ -87,6 +87,7 @@
       background:#222; color:#fff; border-radius:12px; max-width:400px; margin:60px auto 0 auto; padding:2em 1.4em; box-shadow:0 8px 32px #000b;
     }
     #confirm-content { font-size:1em; margin-bottom:1.2em; }
+    #confirm-img-area { text-align:center; margin-bottom:1.2em;}
     @media (max-width: 900px) {
       .container { max-width: 99vw; }
       .preview-controls-wrap { gap: 1.1em; }
@@ -180,6 +181,7 @@
     <div id="confirm-modal-inner">
       <h3 style="margin-top:0;text-align:center;">この内容で送信しますか？</h3>
       <div id="confirm-content" style="font-size:1em; margin-bottom:1.2em;"></div>
+      <div id="confirm-img-area" style="text-align:center; margin-bottom:1.2em;"></div>
       <div style="text-align:center;">
         <button id="confirm-ok" style="padding:0.5em 2em; margin-right:1em;">送信</button>
         <button id="confirm-cancel" style="padding:0.5em 2em;">キャンセル</button>
@@ -368,6 +370,7 @@
     const form = document.getElementById('contact-form');
     const confirmModal = document.getElementById('confirm-modal');
     const confirmContent = document.getElementById('confirm-content');
+    const confirmImgArea = document.getElementById('confirm-img-area');
     const confirmOk = document.getElementById('confirm-ok');
     const confirmCancel = document.getElementById('confirm-cancel');
     let sendFlag = false;
@@ -388,6 +391,11 @@
       msg += `<b>お届け先：</b>${fd.get('address')}<br>`;
       msg += `<b>備考：</b><br>${fd.get('message') ? fd.get('message').replace(/\n/g,"<br>") : ""}<br>`;
       confirmContent.innerHTML = msg;
+
+      // 追加：canvas画像プレビュー
+      const dataURL = canvas.toDataURL("image/png");
+      confirmImgArea.innerHTML =
+        `<img src="${dataURL}" alt="プレビュー画像" style="max-width:95%; border-radius:8px; box-shadow:0 2px 8px #000a;">`;
 
       // モーダルを表示
       confirmModal.style.display = "block";
