@@ -7,11 +7,12 @@
   <link rel="icon" type="image/png" href="favicon32_circle.png">
   <style>
     body { background: #000; color: #fff; font-family: sans-serif; margin: 0; }
-    .container { max-width: 900px; margin: 40px auto; padding: 2em 1em; }
+    .container { max-width: 800px; margin: 40px auto; padding: 2em 1em; }
     h2 { text-align: center; }
+    .template-select-area { margin-bottom: 1em; text-align: center; }
     .preview-area { display: flex; flex-direction: column; align-items: center; margin-bottom: 2em; }
     #tumbler-canvas { 
-      background: #000; 
+      background: #fff; 
       display: block; 
       margin: 0 auto; 
       border-radius: 14px; 
@@ -44,7 +45,6 @@
     .back-btn-area { margin-top: 2em; text-align: center; }
     .back-btn-area button { padding: 0.5em 2em; font-size: 1em; border-radius: 8px; border: 1px solid #666; background: #232323; color: #fff; cursor: pointer; }
     .back-btn-area button:active { background: #333; }
-    .template-select-area { margin-bottom: 1.1em; text-align: center; }
     .note { font-size: 0.91em; color: #ccc; margin: 20px 0 0 0; text-align: center;}
     @media (max-width: 700px) {
       .container { max-width: 99vw; padding: 1em 0.2em; }
@@ -126,9 +126,7 @@
 
     function drawAll() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      // テンプレ画像
       ctx.drawImage(templateImg, 0, 0, templateW, templateH);
-      // ユーザー画像
       if (userImg) {
         const imgW = userImg.width * userPos.scale;
         const imgH = userImg.height * userPos.scale;
