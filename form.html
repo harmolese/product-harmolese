@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>タンブラー レイアウトプレビュー（横並びUI・操作下ボタン）</title>
+  <title>タンブラー レイアウトプレビュー（確認画面付き）</title>
   <meta name="viewport" content="width=500,initial-scale=1.0">
   <style>
     body {
@@ -150,10 +150,42 @@
     .back-btn-area button:active {
       background: #333;
     }
-    @media (max-width: 700px) {
-      .preview-controls { flex-direction: column; gap: 0.8em; align-items: center;}
-      .container { max-width: 99vw; padding: 1em 0.5em;}
-      canvas { width: 98vw; height: auto; max-width: 98vw; max-height: 55vw; }
+    /* モーダル用 */
+    #confirm-modal {
+      display: none;
+      position: fixed;
+      left: 0; top: 0;
+      width: 100vw; height: 100vh;
+      z-index: 9999;
+      background: rgba(0,0,0,0.7);
+      justify-content: center;
+      align-items: center;
+    }
+    #confirm-modal > div {
+      background: #181818;
+      padding: 2em 1.5em;
+      border-radius: 18px;
+      max-width: 94vw;
+      max-height: 92vh;
+      overflow: auto;
+      text-align: center;
+      color: #fff;
+      box-shadow: 0 4px 24px #000;
+    }
+    #confirm-modal img { max-width:240px;border-radius:10px;box-shadow:0 0 10px #111;}
+    #modal-input-preview { margin:1em auto;text-align:left;max-width:440px;}
+    #confirm-modal button {
+      margin: 0.7em 0.5em 0 0.5em;
+      padding: 0.6em 2.2em;
+      font-size: 1.1em;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      background: #379;
+      color: #fff;
+    }
+    #confirm-modal button#cancel-btn {
+      background: #444;
     }
   </style>
 </head>
@@ -201,7 +233,7 @@
       <textarea id="bikou" name="message" rows="3" placeholder="備考欄：ご要望や連絡先等" required></textarea>
       <input type="hidden" name="_subject" value="タンブラー彫刻">
       <input type="hidden" name="_replyto" value="ryuji.hirashiki@gmail.com">
-      <button type="submit" class="reset-btn" style="background:#379;color:#fff;">完了</button>
+      <button type="button" class="reset-btn" style="background:#379;color:#fff;" id="confirm-btn">完了</button>
     </form>
     <!-- Backボタン -->
     <div class="back-btn-area">
@@ -214,6 +246,16 @@
       ※「画像を保存」でプレビュー画像を保存→ご自身でメール添付してください。<br>
       ※画像はドラッグで移動、ホイールで拡大縮小、上下左右・拡大縮小ボタンでも微調整できます。<br>
       ※「完了」ボタンで備考欄の内容のみ送信されます。
+    </div>
+    <!-- 確認用モーダル -->
+    <div id="confirm-modal">
+      <div>
+        <h3>内容のご確認</h3>
+        <div id="modal-canvas-preview" style="margin:1em auto;"></div>
+        <div id="modal-input-preview"></div>
+        <button id="send-btn">送信</button>
+        <button id="cancel-btn">戻る</button>
+      </div>
     </div>
   </div>
   <script>
@@ -232,7 +274,6 @@
     let userPos = { x: 0, y: 0, scale: 1 };
     let defaultPos = { x: 0, y: 0, scale: 1 };
 
-    // テンプレ画像をcanvas中央・縦横比維持で描画
     function calcTumblerDrawInfo() {
       const cW = canvas.width, cH = canvas.height;
       const iW = tumblerImg.width, iH = tumblerImg.height;
@@ -346,6 +387,54 @@
       userPos.scale = newScale;
       drawAll();
     });
+
+    // --- 確認モーダル処理 ---
+    const confirmModal = document.getElementById('confirm-modal');
+    const confirmBtn = document.getElementById('confirm-btn');
+    const sendBtn = document.getElementById('send-btn');
+    const cancelBtn = document.getElementById('cancel-btn');
+    const contactForm = document.getElementById('contact-form');
+    const modalInputPreview = document.getElementById('modal-input-preview');
+    const modalCanvasPreview = document.getElementById('modal-canvas-preview');
+
+    confirmBtn.onclick = function() {
+      // 入力内容取得
+      const name = contactForm.elements['name'].value;
+      const tel = contactForm.elements['tel'].value;
+      const email = contactForm.elements['email'].value;
+      const address = contactForm.elements['address'].value;
+      const bikou = contactForm.elements['message'].value;
+
+      // バリデーション
+      if (!name || !tel || !email || !address || !bikou) {
+        alert("すべての項目を入力してください。");
+        return;
+      }
+
+      // canvasプレビュー
+      const dataUrl = canvas.toDataURL("image/png");
+      modalCanvasPreview.innerHTML = `<img src="${dataUrl}" alt="プレビュー画像">`;
+
+      // 入力内容プレビュー
+      modalInputPreview.innerHTML = `
+        <div><b>氏名：</b>${name}</div>
+        <div><b>電話番号：</b>${tel}</div>
+        <div><b>メール：</b>${email}</div>
+        <div><b>お届け先：</b>${address}</div>
+        <div><b>備考：</b>${bikou.replace(/\n/g,"<br>")}</div>
+      `;
+
+      confirmModal.style.display = "flex";
+    };
+
+    cancelBtn.onclick = function() {
+      confirmModal.style.display = "none";
+    };
+
+    sendBtn.onclick = function() {
+      confirmModal.style.display = "none";
+      contactForm.submit();
+    };
   </script>
 </body>
 </html>
