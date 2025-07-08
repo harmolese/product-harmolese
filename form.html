@@ -291,14 +291,8 @@
     </div>
   </div>
   <script>
-    // テンプレ画像選択用
     const templateSelect = document.getElementById('template-select');
     let tumblerImgSrc = templateSelect.value;
-    templateSelect.onchange = function() {
-      tumblerImgSrc = templateSelect.value;
-      loadTumblerImage();
-    };
-
     const canvas = document.getElementById("tumbler-canvas");
     const ctx = canvas.getContext("2d");
     const MOVE_STEP = 15;
@@ -332,6 +326,7 @@
     }
     function drawAll() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if (!tumblerImg.complete || tumblerImg.naturalWidth === 0) return;
       calcTumblerDrawInfo();
       ctx.drawImage(tumblerImg, tDraw.x, tDraw.y, tDraw.w, tDraw.h);
       if (userImg) {
@@ -344,9 +339,17 @@
     }
     function loadTumblerImage() {
       tumblerImg = new Image();
-      tumblerImg.src = tumblerImgSrc;
       tumblerImg.onload = () => { drawAll(); };
+      tumblerImg.src = tumblerImgSrc + '?_=' + new Date().getTime(); // キャッシュ対策
     }
+
+    // テンプレ切替時
+    templateSelect.onchange = function() {
+      tumblerImgSrc = templateSelect.value;
+      loadTumblerImage();
+    };
+
+    // 最初の表示
     loadTumblerImage();
 
     document.getElementById('save-btn').onclick = function() {
