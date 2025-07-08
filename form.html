@@ -2,8 +2,8 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>タンブラー レイアウトプレビュー（確認画面付き）</title>
-  <meta name="viewport" content="width=500,initial-scale=1.0">
+  <title>タンブラー レイアウトプレビュー（確認画面・スマホ対応）</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <style>
     body {
       font-family: sans-serif;
@@ -36,6 +36,7 @@
       border: 1px solid #333;
       background: #181818;
       color: #fff;
+      box-sizing: border-box;
     }
     textarea::placeholder,
     input::placeholder {
@@ -130,7 +131,8 @@
       width: 390px;
       height: 600px;
       max-width: 98vw;
-      max-height: 80vh;
+      max-height: 65vw;
+      /* モバイルで自然に縮む */
     }
     .back-btn-area {
       margin-top: 2em;
@@ -186,6 +188,32 @@
     }
     #confirm-modal button#cancel-btn {
       background: #444;
+    }
+    /* --- スマホ対応 --- */
+    @media (max-width: 700px) {
+      .container {
+        max-width: 99vw;
+        padding: 1em 0.2em;
+      }
+      .preview-controls {
+        flex-direction: column;
+        gap: 1em;
+        align-items: center;
+        margin-bottom: 1em;
+      }
+      canvas {
+        width: 98vw;
+        height: auto;
+        max-width: 98vw;
+        max-height: 65vw;
+      }
+      .control-area, .controls, .preview-area {
+        width: 100%;
+        align-items: center;
+      }
+      #confirm-modal > div {
+        padding: 1em 0.3em;
+      }
     }
   </style>
 </head>
