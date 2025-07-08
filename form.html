@@ -6,217 +6,45 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <link rel="icon" type="image/png" sizes="32x32" href="favicon32_circle.png">
   <style>
-    body {
-      font-family: sans-serif;
-      background: #000;
-      color: #fff;
-      margin: 0;
-      padding: 0;
-    }
-    .container {
-      max-width: 800px;
-      margin: 40px auto;
-      background: #000;
-      color: #fff;
-      padding: 2em 1.5em;
-      border-radius: 12px;
-      box-shadow: 0 4px 24px #222a;
-      text-align: center;
-    }
-    .note {
-      font-size: 0.9em;
-      color: #ccc;
-      margin-top: 8px;
-    }
+    body { font-family: sans-serif; background: #000; color: #fff; margin: 0; padding: 0; }
+    .container { max-width: 800px; margin: 40px auto; background: #000; color: #fff; padding: 2em 1.5em; border-radius: 12px; box-shadow: 0 4px 24px #222a; text-align: center; }
+    .note { font-size: 0.9em; color: #ccc; margin-top: 8px; }
     textarea, input[type="text"], input[type="email"], input[type="tel"] {
-      width: 95%;
-      border-radius: 8px;
-      font-size: 1em;
-      margin-bottom: 0.5em;
-      padding: 0.5em;
-      border: 1px solid #333;
-      background: #181818;
-      color: #fff;
-      box-sizing: border-box;
+      width: 95%; border-radius: 8px; font-size: 1em; margin-bottom: 0.5em; padding: 0.5em; border: 1px solid #333; background: #181818; color: #fff; box-sizing: border-box;
     }
-    textarea::placeholder,
-    input::placeholder {
-      color: #aaa;
-    }
-    .preview-controls {
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      gap: 2em;
-      margin-bottom: 1.5em;
-    }
-    .preview-area {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .control-area {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.4em;
-      margin-top: 0.5em;
-    }
-    .controls { 
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.4em;
-    }
-    .ctrl-row {
-      display: flex;
-      justify-content: center;
-      gap: 0.6em;
-      margin-bottom: 3px;
-    }
+    textarea::placeholder, input::placeholder { color: #aaa; }
+    .preview-controls { display: flex; justify-content: center; align-items: flex-start; gap: 2em; margin-bottom: 1.5em; }
+    .preview-area { display: flex; flex-direction: column; align-items: center; }
+    .control-area { display: flex; flex-direction: column; align-items: center; gap: 0.4em; margin-top: 0.5em; }
+    .controls { display: flex; flex-direction: column; align-items: center; gap: 0.4em; }
+    .ctrl-row { display: flex; justify-content: center; gap: 0.6em; margin-bottom: 3px; }
     .ctrl-row:last-child { margin-bottom: 0; }
-    button.ctrl-btn {
-      font-size: 1.6em;
-      width: 2.7em;
-      height: 2.7em;
-      border-radius: 8px;
-      border: 1px solid #444;
-      background: #181818;
-      color: #fff;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
+    button.ctrl-btn { font-size: 1.6em; width: 2.7em; height: 2.7em; border-radius: 8px; border: 1px solid #444; background: #181818; color: #fff; cursor: pointer; transition: background 0.2s; }
     button.ctrl-btn:active { background: #282828; }
-    button.reset-btn {
-      font-size: 1.1em;
-      margin-top: 0.6em;
-      padding: 0.5em 1.3em;
-      border-radius: 8px;
-      background: #181818;
-      color: #fff;
-      border: 1px solid #444;
-      cursor: pointer;
-    }
+    button.reset-btn { font-size: 1.1em; margin-top: 0.6em; padding: 0.5em 1.3em; border-radius: 8px; background: #181818; color: #fff; border: 1px solid #444; cursor: pointer; }
     button.reset-btn:active { background: #282828; }
-    .file-upload {
-      margin: 1em 0 0.5em 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .file-upload label {
-      font-weight: bold;
-      font-size: 1rem;
-      cursor: pointer;
-      color: #fff;
-    }
+    .file-upload { margin: 1em 0 0.5em 0; display: flex; flex-direction: column; align-items: center; }
+    .file-upload label { font-weight: bold; font-size: 1rem; cursor: pointer; color: #fff; }
     .file-upload input[type="file"] { margin-left: 8px; }
-    #save-btn {
-      margin: 0.5em 0 1em 0;
-      padding: 0.4em 1.2em;
-      border-radius: 8px;
-      background: #9ec9e8;
-      color: #000;
-      border: 1px solid #bbb;
-      cursor: pointer;
-    }
+    #save-btn { margin: 0.5em 0 1em 0; padding: 0.4em 1.2em; border-radius: 8px; background: #9ec9e8; color: #000; border: 1px solid #bbb; cursor: pointer; }
     #save-btn:active { background: #7fb7da; }
-    canvas {
-      display: block;
-      border-radius: 16px;
-      box-shadow: 0 0 8px #222;
-      background: #eee;
-      cursor: grab;
-      touch-action: none;
-      margin-bottom: 0.7em;
-      width: 390px;
-      height: 600px;
-      max-width: 98vw;
-    }
-    .template-select-area {
-      margin-bottom: 1em;
-      text-align: center;
-    }
-    .back-btn-area {
-      margin-top: 2em;
-    }
-    .back-btn-area button {
-      padding: 0.5em 2em;
-      font-size: 1em;
-      border-radius: 8px;
-      border: 1px solid #666;
-      background: #232323;
-      color: #fff;
-      cursor: pointer;
-      letter-spacing: 0.1em;
-      box-shadow: 0 2px 8px #111a;
-      transition: background 0.2s;
-    }
-    .back-btn-area button:active {
-      background: #333;
-    }
-    /* モーダル用 */
-    #confirm-modal {
-      display: none;
-      position: fixed;
-      left: 0; top: 0;
-      width: 100vw; height: 100vh;
-      z-index: 9999;
-      background: rgba(0,0,0,0.7);
-      justify-content: center;
-      align-items: center;
-    }
-    #confirm-modal > div {
-      background: #181818;
-      padding: 2em 1.5em;
-      border-radius: 18px;
-      max-width: 94vw;
-      max-height: 92vh;
-      overflow: auto;
-      text-align: center;
-      color: #fff;
-      box-shadow: 0 4px 24px #000;
-    }
-    #confirm-modal img { max-width:240px;border-radius:10px;box-shadow:0 0 10px #111;}
-    #modal-input-preview { margin:1em auto;text-align:left;max-width:440px;}
-    #confirm-modal button {
-      margin: 0.7em 0.5em 0 0.5em;
-      padding: 0.6em 2.2em;
-      font-size: 1.1em;
-      border-radius: 8px;
-      border: none;
-      cursor: pointer;
-      background: #379;
-      color: #fff;
-    }
-    #confirm-modal button#cancel-btn {
-      background: #444;
-    }
-    /* --- スマホ対応 --- */
+    canvas { display: block; border-radius: 16px; box-shadow: 0 0 8px #222; background: #eee; cursor: grab; touch-action: none; margin-bottom: 0.7em; width: 390px; height: 600px; max-width: 98vw; }
+    .template-select-area { margin-bottom: 1em; text-align: center; }
+    .back-btn-area { margin-top: 2em; }
+    .back-btn-area button { padding: 0.5em 2em; font-size: 1em; border-radius: 8px; border: 1px solid #666; background: #232323; color: #fff; cursor: pointer; letter-spacing: 0.1em; box-shadow: 0 2px 8px #111a; transition: background 0.2s; }
+    .back-btn-area button:active { background: #333; }
+    #confirm-modal { display: none; position: fixed; left: 0; top: 0; width: 100vw; height: 100vh; z-index: 9999; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; }
+    #confirm-modal > div { background: #181818; padding: 2em 1.5em; border-radius: 18px; max-width: 94vw; max-height: 92vh; overflow: auto; text-align: center; color: #fff; box-shadow: 0 4px 24px #000; }
+    #confirm-modal img { max-width:240px; border-radius:10px; box-shadow:0 0 10px #111; }
+    #modal-input-preview { margin:1em auto; text-align:left; max-width:440px; }
+    #confirm-modal button { margin: 0.7em 0.5em 0 0.5em; padding: 0.6em 2.2em; font-size: 1.1em; border-radius: 8px; border: none; cursor: pointer; background: #379; color: #fff; }
+    #confirm-modal button#cancel-btn { background: #444; }
     @media (max-width: 700px) {
-      .container {
-        max-width: 99vw;
-        padding: 1em 0.2em;
-      }
-      .preview-controls {
-        flex-direction: column;
-        gap: 1em;
-        align-items: center;
-        margin-bottom: 1em;
-      }
-      canvas {
-        width: 98vw;
-        max-width: 98vw;
-        height: auto !important;
-        aspect-ratio: 13/20;
-      }
-      .control-area, .controls, .preview-area {
-        width: 100%;
-        align-items: center;
-      }
-      #confirm-modal > div {
-        padding: 1em 0.3em;
-      }
+      .container { max-width: 99vw; padding: 1em 0.2em; }
+      .preview-controls { flex-direction: column; gap: 1em; align-items: center; margin-bottom: 1em; }
+      canvas { width: 98vw; max-width: 98vw; height: auto !important; aspect-ratio: 13/20; }
+      .control-area, .controls, .preview-area { width: 100%; align-items: center; }
+      #confirm-modal > div { padding: 1em 0.3em; }
     }
   </style>
 </head>
@@ -305,6 +133,35 @@
     let userPos = { x: 0, y: 0, scale: 1 };
     let defaultPos = { x: 0, y: 0, scale: 1 };
 
+    // 余白黒塗り画像を返す関数
+    function processTemplateImage(src, callback) {
+      let img = new Image();
+      img.crossOrigin = "anonymous";
+      img.onload = () => {
+        let tempCanvas = document.createElement('canvas');
+        tempCanvas.width = img.width;
+        tempCanvas.height = img.height;
+        let tempCtx = tempCanvas.getContext('2d');
+        tempCtx.drawImage(img, 0, 0);
+
+        let imageData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+        let data = imageData.data;
+        for (let i = 0; i < data.length; i += 4) {
+          let r = data[i], g = data[i+1], b = data[i+2], a = data[i+3];
+          // α=0（透明）またはほぼ白（RGB>245）を黒に
+          if (a < 10 || (r > 245 && g > 245 && b > 245)) {
+            data[i] = 0; data[i+1] = 0; data[i+2] = 0; data[i+3] = 255;
+          }
+        }
+        tempCtx.putImageData(imageData, 0, 0);
+
+        let outImg = new Image();
+        outImg.onload = () => { callback(outImg); };
+        outImg.src = tempCanvas.toDataURL();
+      };
+      img.src = src + '?_=' + new Date().getTime();
+    }
+
     function calcTumblerDrawInfo() {
       const cW = canvas.width, cH = canvas.height;
       const iW = tumblerImg.width, iH = tumblerImg.height;
@@ -338,9 +195,10 @@
       }
     }
     function loadTumblerImage() {
-      tumblerImg = new Image();
-      tumblerImg.onload = () => { drawAll(); };
-      tumblerImg.src = tumblerImgSrc + '?_=' + new Date().getTime(); // キャッシュ対策
+      processTemplateImage(tumblerImgSrc, function(processedImg){
+        tumblerImg = processedImg;
+        drawAll();
+      });
     }
 
     // テンプレ切替時
