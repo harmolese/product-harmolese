@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>タンブラー レイアウトプレビュー（横並びUI・拡大）</title>
+  <title>タンブラー レイアウトプレビュー（横並びUI・操作下ボタン）</title>
   <meta name="viewport" content="width=500,initial-scale=1.0">
   <style>
     body {
@@ -41,7 +41,6 @@
     input::placeholder {
       color: #aaa;
     }
-    /* 横並びUI */
     .preview-controls {
       display: flex;
       justify-content: center;
@@ -54,36 +53,18 @@
       flex-direction: column;
       align-items: center;
     }
-    .file-upload {
-      margin: 1em 0 0.5em 0;
-    }
-    .file-upload label {
-      font-weight: bold;
-      font-size: 1rem;
-      cursor: pointer;
-      color: #fff;
-    }
-    .file-upload input[type="file"] { margin-left: 8px; }
-    canvas {
-      display: block;
-      border-radius: 16px;
-      box-shadow: 0 0 8px #222;
-      background: #eee;
-      cursor: grab;
-      touch-action: none;
-      margin-bottom: 0.7em;
-      /* 1.5倍に拡大 */
-      width: 390px;
-      height: 600px;
-      max-width: 98vw;
-      max-height: 80vh;
+    .control-area {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4em;
+      margin-top: 0.5em;
     }
     .controls { 
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 0.4em;
-      margin-top: 0.5em;
     }
     .ctrl-row {
       display: flex;
@@ -115,8 +96,21 @@
       cursor: pointer;
     }
     button.reset-btn:active { background: #282828; }
+    .file-upload {
+      margin: 1em 0 0.5em 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .file-upload label {
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      color: #fff;
+    }
+    .file-upload input[type="file"] { margin-left: 8px; }
     #save-btn {
-      margin-bottom: 1em;
+      margin: 0.5em 0 1em 0;
       padding: 0.4em 1.2em;
       border-radius: 8px;
       background: #9ec9e8;
@@ -125,6 +119,19 @@
       cursor: pointer;
     }
     #save-btn:active { background: #7fb7da; }
+    canvas {
+      display: block;
+      border-radius: 16px;
+      box-shadow: 0 0 8px #222;
+      background: #eee;
+      cursor: grab;
+      touch-action: none;
+      margin-bottom: 0.7em;
+      width: 390px;
+      height: 600px;
+      max-width: 98vw;
+      max-height: 80vh;
+    }
     .back-btn-area {
       margin-top: 2em;
     }
@@ -157,6 +164,25 @@
       <!-- レイアウトプレビューエリア -->
       <div class="preview-area">
         <canvas id="tumbler-canvas" width="390" height="600"></canvas>
+      </div>
+      <!-- コントロール＋アップロード・保存ボタン -->
+      <div class="control-area">
+        <div class="controls">
+          <div class="ctrl-row">
+            <button class="ctrl-btn" id="move-up" title="上へ">↑</button>
+          </div>
+          <div class="ctrl-row">
+            <button class="ctrl-btn" id="move-left" title="左へ">←</button>
+            <button class="ctrl-btn" id="zoom-in" title="拡大">＋</button>
+            <button class="ctrl-btn" id="zoom-out" title="縮小">－</button>
+            <button class="ctrl-btn" id="move-right" title="右へ">→</button>
+          </div>
+          <div class="ctrl-row">
+            <button class="ctrl-btn" id="move-down" title="下へ">↓</button>
+          </div>
+          <button class="reset-btn" id="reset-btn" title="リセット">リセット</button>
+        </div>
+        <!-- 操作ボタンの下にアップロードと保存ボタン -->
         <div class="file-upload">
           <label>
             レイアウト画像を選択　
@@ -165,24 +191,8 @@
         </div>
         <button id="save-btn" title="プレビュー画像を保存">画像を保存</button>
       </div>
-      <!-- コントロールボタン -->
-      <div class="controls">
-        <div class="ctrl-row">
-          <button class="ctrl-btn" id="move-up" title="上へ">↑</button>
-        </div>
-        <div class="ctrl-row">
-          <button class="ctrl-btn" id="move-left" title="左へ">←</button>
-          <button class="ctrl-btn" id="zoom-in" title="拡大">＋</button>
-          <button class="ctrl-btn" id="zoom-out" title="縮小">－</button>
-          <button class="ctrl-btn" id="move-right" title="右へ">→</button>
-        </div>
-        <div class="ctrl-row">
-          <button class="ctrl-btn" id="move-down" title="下へ">↓</button>
-        </div>
-        <button class="reset-btn" id="reset-btn" title="リセット">リセット</button>
-      </div>
     </div>
-    <!-- フォーム（氏名・電話番号・メール・お届け先・備考） -->
+    <!-- フォーム -->
     <form id="contact-form" action="https://formspree.io/f/mvgrnnpp" method="POST">
       <input type="text" name="name" placeholder="氏名" required>
       <input type="tel" name="tel" placeholder="電話番号" required>
@@ -193,14 +203,12 @@
       <input type="hidden" name="_replyto" value="ryuji.hirashiki@gmail.com">
       <button type="submit" class="reset-btn" style="background:#379;color:#fff;">完了</button>
     </form>
-
     <!-- Backボタン -->
     <div class="back-btn-area">
       <a href="index.html">
         <button type="button">Back</button>
       </a>
     </div>
-
     <div class="note">
       ※画像の自動添付メール送信は無料ではできません。<br>
       ※「画像を保存」でプレビュー画像を保存→ご自身でメール添付してください。<br>
@@ -237,10 +245,10 @@
     }
     function resetUserPos() {
       if (!userImg) return;
-      const imgW = 240; // 160*1.5=240
+      const imgW = 240;
       const imgH = 240 * (userImg.height / userImg.width);
       const x = tDraw.x + (tDraw.w - imgW) / 2;
-      const y = tDraw.y + (tDraw.h - imgH) / 2 + 45; // 1.5倍なので+30→+45
+      const y = tDraw.y + (tDraw.h - imgH) / 2 + 45;
       userPos = { x: x, y: y, scale: 1 };
       defaultPos = { ...userPos };
     }
@@ -251,24 +259,18 @@
       if (userImg) {
         const baseW = 240 * userPos.scale;
         const baseH = (240 * (userImg.height / userImg.width)) * userPos.scale;
-        ctx.globalAlpha = 0.65;  // 透過率
+        ctx.globalAlpha = 0.65;
         ctx.drawImage(userImg, userPos.x, userPos.y, baseW, baseH);
         ctx.globalAlpha = 1.0;
       }
     }
-
-    // --- テンプレ画像ロード
     tumblerImg.onload = () => { drawAll(); };
-
-    // 画像保存ボタン
     document.getElementById('save-btn').onclick = function() {
       const a = document.createElement('a');
       a.href = canvas.toDataURL("image/png");
       a.download = "tumbler_layout.png";
       a.click();
     };
-
-    // 画像アップロード
     document.getElementById('image-upload').addEventListener('change', function(e) {
       const file = e.target.files[0];
       if (!file) return;
@@ -284,8 +286,6 @@
       };
       reader.readAsDataURL(file);
     });
-
-    // --- ボタン操作
     document.getElementById('move-up').onclick = () => { userPos.y -= MOVE_STEP; drawAll(); }
     document.getElementById('move-down').onclick = () => { userPos.y += MOVE_STEP; drawAll(); }
     document.getElementById('move-left').onclick = () => { userPos.x -= MOVE_STEP; drawAll(); }
@@ -297,11 +297,8 @@
       drawAll();
     }
     document.getElementById('reset-btn').onclick = () => { userPos = { ...defaultPos }; drawAll(); }
-
-    // --- マウス操作
     let dragging = false;
     let dragOffset = { x: 0, y: 0 };
-
     canvas.addEventListener('mousedown', function(e) {
       if (!userImg) return;
       const rect = canvas.getBoundingClientRect();
@@ -319,7 +316,6 @@
         canvas.style.cursor = "grabbing";
       }
     });
-
     canvas.addEventListener('mousemove', function(e) {
       if (!userImg || !dragging) return;
       const rect = canvas.getBoundingClientRect();
@@ -329,13 +325,10 @@
       userPos.y = mouseY - dragOffset.y;
       drawAll();
     });
-
     window.addEventListener('mouseup', function() {
       dragging = false;
       canvas.style.cursor = "grab";
     });
-
-    // ホイールで拡大縮小
     canvas.addEventListener('wheel', function(e) {
       if (!userImg) return;
       e.preventDefault();
