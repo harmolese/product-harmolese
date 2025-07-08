@@ -2,8 +2,8 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>タンブラー レイアウトプレビュー（透過表示・黒背景・Backボタン）</title>
-  <meta name="viewport" content="width=350,initial-scale=1.0">
+  <title>タンブラー レイアウトプレビュー（横並びUI・拡大）</title>
+  <meta name="viewport" content="width=500,initial-scale=1.0">
   <style>
     body {
       font-family: sans-serif;
@@ -13,7 +13,7 @@
       padding: 0;
     }
     .container {
-      max-width: 400px;
+      max-width: 800px;
       margin: 40px auto;
       background: #000;
       color: #fff;
@@ -41,13 +41,61 @@
     input::placeholder {
       color: #aaa;
     }
-    .controls { margin: 1em 0; display: flex; flex-direction: column; align-items: center; gap: 0.2em; }
-    .ctrl-row { display: flex; justify-content: center; gap: 0.5em; margin-bottom: 2px; }
+    /* 横並びUI */
+    .preview-controls {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 2em;
+      margin-bottom: 1.5em;
+    }
+    .preview-area {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .file-upload {
+      margin: 1em 0 0.5em 0;
+    }
+    .file-upload label {
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      color: #fff;
+    }
+    .file-upload input[type="file"] { margin-left: 8px; }
+    canvas {
+      display: block;
+      border-radius: 16px;
+      box-shadow: 0 0 8px #222;
+      background: #eee;
+      cursor: grab;
+      touch-action: none;
+      margin-bottom: 0.7em;
+      /* 1.5倍に拡大 */
+      width: 390px;
+      height: 600px;
+      max-width: 98vw;
+      max-height: 80vh;
+    }
+    .controls { 
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4em;
+      margin-top: 0.5em;
+    }
+    .ctrl-row {
+      display: flex;
+      justify-content: center;
+      gap: 0.6em;
+      margin-bottom: 3px;
+    }
     .ctrl-row:last-child { margin-bottom: 0; }
     button.ctrl-btn {
-      font-size: 1.3em;
-      width: 2.2em;
-      height: 2.2em;
+      font-size: 1.6em;
+      width: 2.7em;
+      height: 2.7em;
       border-radius: 8px;
       border: 1px solid #444;
       background: #181818;
@@ -57,9 +105,9 @@
     }
     button.ctrl-btn:active { background: #282828; }
     button.reset-btn {
-      font-size: 1em;
-      margin-top: 0.5em;
-      padding: 0.4em 1.2em;
+      font-size: 1.1em;
+      margin-top: 0.6em;
+      padding: 0.5em 1.3em;
       border-radius: 8px;
       background: #181818;
       color: #fff;
@@ -77,23 +125,6 @@
       cursor: pointer;
     }
     #save-btn:active { background: #7fb7da; }
-    canvas {
-      display: block;
-      margin: 0 auto 10px auto;
-      border-radius: 16px;
-      box-shadow: 0 0 8px #222;
-      background: #eee;
-      cursor: grab;
-      touch-action: none;
-    }
-    .file-upload { margin: 1em 0; }
-    .file-upload label {
-      font-weight: bold;
-      font-size: 1rem;
-      cursor: pointer;
-      color: #fff;
-    }
-    .file-upload input[type="file"] { margin-left: 8px; }
     .back-btn-area {
       margin-top: 2em;
     }
@@ -112,43 +143,45 @@
     .back-btn-area button:active {
       background: #333;
     }
+    @media (max-width: 700px) {
+      .preview-controls { flex-direction: column; gap: 0.8em; align-items: center;}
+      .container { max-width: 99vw; padding: 1em 0.5em;}
+      canvas { width: 98vw; height: auto; max-width: 98vw; max-height: 55vw; }
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <h2>タンブラー レイアウトプレビュー</h2>
-    <canvas id="tumbler-canvas" width="260" height="400"></canvas>
-    
-    <!-- ファイルを選択（レイアウト画像アップロード） -->
-    <div class="file-upload">
-      <label>
-        レイアウト画像を選択　
-        <input type="file" id="image-upload" accept="image/*">
-      </label>
-    </div>
-    
-    <!-- コントロールボタン -->
-    <div class="controls">
-      <div class="ctrl-row">
-        <button class="ctrl-btn" id="move-up" title="上へ">↑</button>
+    <div class="preview-controls">
+      <!-- レイアウトプレビューエリア -->
+      <div class="preview-area">
+        <canvas id="tumbler-canvas" width="390" height="600"></canvas>
+        <div class="file-upload">
+          <label>
+            レイアウト画像を選択　
+            <input type="file" id="image-upload" accept="image/*">
+          </label>
+        </div>
+        <button id="save-btn" title="プレビュー画像を保存">画像を保存</button>
       </div>
-      <div class="ctrl-row">
-        <button class="ctrl-btn" id="move-left" title="左へ">←</button>
-        <button class="ctrl-btn" id="zoom-in" title="拡大">＋</button>
-        <button class="ctrl-btn" id="zoom-out" title="縮小">－</button>
-        <button class="ctrl-btn" id="move-right" title="右へ">→</button>
+      <!-- コントロールボタン -->
+      <div class="controls">
+        <div class="ctrl-row">
+          <button class="ctrl-btn" id="move-up" title="上へ">↑</button>
+        </div>
+        <div class="ctrl-row">
+          <button class="ctrl-btn" id="move-left" title="左へ">←</button>
+          <button class="ctrl-btn" id="zoom-in" title="拡大">＋</button>
+          <button class="ctrl-btn" id="zoom-out" title="縮小">－</button>
+          <button class="ctrl-btn" id="move-right" title="右へ">→</button>
+        </div>
+        <div class="ctrl-row">
+          <button class="ctrl-btn" id="move-down" title="下へ">↓</button>
+        </div>
+        <button class="reset-btn" id="reset-btn" title="リセット">リセット</button>
       </div>
-      <div class="ctrl-row">
-        <button class="ctrl-btn" id="move-down" title="下へ">↓</button>
-      </div>
-      <button class="reset-btn" id="reset-btn" title="リセット">リセット</button>
     </div>
-    
-    <!-- 画像を保存ボタン -->
-    <div style="margin:1em 0;">
-      <button id="save-btn" title="プレビュー画像を保存">画像を保存</button>
-    </div>
-    
     <!-- フォーム（氏名・電話番号・メール・お届け先・備考） -->
     <form id="contact-form" action="https://formspree.io/f/mvgrnnpp" method="POST">
       <input type="text" name="name" placeholder="氏名" required>
@@ -180,7 +213,7 @@
     const tumblerImgSrc = "67a9bd50-6f8c-48f9-9556-dff30c898654.png";
     const canvas = document.getElementById("tumbler-canvas");
     const ctx = canvas.getContext("2d");
-    const MOVE_STEP = 10;
+    const MOVE_STEP = 15;
     const SCALE_STEP = 0.08;
 
     let tumblerImg = new Image();
@@ -204,10 +237,10 @@
     }
     function resetUserPos() {
       if (!userImg) return;
-      const imgW = 160;
-      const imgH = 160 * (userImg.height / userImg.width);
+      const imgW = 240; // 160*1.5=240
+      const imgH = 240 * (userImg.height / userImg.width);
       const x = tDraw.x + (tDraw.w - imgW) / 2;
-      const y = tDraw.y + (tDraw.h - imgH) / 2 + 30;
+      const y = tDraw.y + (tDraw.h - imgH) / 2 + 45; // 1.5倍なので+30→+45
       userPos = { x: x, y: y, scale: 1 };
       defaultPos = { ...userPos };
     }
@@ -216,9 +249,9 @@
       calcTumblerDrawInfo();
       ctx.drawImage(tumblerImg, tDraw.x, tDraw.y, tDraw.w, tDraw.h);
       if (userImg) {
-        const baseW = 160 * userPos.scale;
-        const baseH = (160 * (userImg.height / userImg.width)) * userPos.scale;
-        ctx.globalAlpha = 0.65;  // 透過率を下げて表示
+        const baseW = 240 * userPos.scale;
+        const baseH = (240 * (userImg.height / userImg.width)) * userPos.scale;
+        ctx.globalAlpha = 0.65;  // 透過率
         ctx.drawImage(userImg, userPos.x, userPos.y, baseW, baseH);
         ctx.globalAlpha = 1.0;
       }
@@ -274,8 +307,8 @@
       const rect = canvas.getBoundingClientRect();
       const mouseX = e.clientX - rect.left;
       const mouseY = e.clientY - rect.top;
-      const baseW = 160 * userPos.scale;
-      const baseH = (160 * (userImg.height / userImg.width)) * userPos.scale;
+      const baseW = 240 * userPos.scale;
+      const baseH = (240 * (userImg.height / userImg.width)) * userPos.scale;
       if (
         mouseX >= userPos.x && mouseX <= userPos.x + baseW &&
         mouseY >= userPos.y && mouseY <= userPos.y + baseH
@@ -309,12 +342,12 @@
       let newScale = userPos.scale * (e.deltaY < 0 ? 1.08 : 1 / 1.08);
       if (newScale < 0.2) newScale = 0.2;
       if (newScale > 6.0) newScale = 6.0;
-      const baseW = 160 * userPos.scale;
-      const baseH = (160 * (userImg.height / userImg.width)) * userPos.scale;
+      const baseW = 240 * userPos.scale;
+      const baseH = (240 * (userImg.height / userImg.width)) * userPos.scale;
       const centerX = userPos.x + baseW / 2;
       const centerY = userPos.y + baseH / 2;
-      const newBaseW = 160 * newScale;
-      const newBaseH = (160 * (userImg.height / userImg.width)) * newScale;
+      const newBaseW = 240 * newScale;
+      const newBaseH = (240 * (userImg.height / userImg.width)) * newScale;
       userPos.x = centerX - newBaseW / 2;
       userPos.y = centerY - newBaseH / 2;
       userPos.scale = newScale;
