@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>タンブラー レイアウトプレビュー（黒背景・Backボタン付き）</title>
+  <title>タンブラー レイアウトプレビュー（透過表示・黒背景・Backボタン）</title>
   <meta name="viewport" content="width=350,initial-scale=1.0">
   <style>
     body {
@@ -218,7 +218,7 @@
       if (userImg) {
         const baseW = 160 * userPos.scale;
         const baseH = (160 * (userImg.height / userImg.width)) * userPos.scale;
-        ctx.globalAlpha = 0.92;
+        ctx.globalAlpha = 0.65;  // 透過率を下げて表示
         ctx.drawImage(userImg, userPos.x, userPos.y, baseW, baseH);
         ctx.globalAlpha = 1.0;
       }
