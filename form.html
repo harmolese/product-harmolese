@@ -2,49 +2,53 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>タンブラー・テンプレート選択＆レイアウト</title>
+  <title>タンブラー レイアウト注文フォーム</title>
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <link rel="icon" type="image/png" sizes="32x32" href="favicon32_circle.png">
+  <link rel="icon" type="image/png" href="favicon32_circle.png">
   <style>
-    body { font-family: sans-serif; background: #000; color: #fff; margin: 0; padding: 0; }
-    .container { max-width: 800px; margin: 40px auto; background: #000; color: #fff; padding: 2em 1.5em; border-radius: 12px; box-shadow: 0 4px 24px #222a; text-align: center; }
-    .note { font-size: 0.9em; color: #ccc; margin-top: 8px; }
-    textarea, input[type="text"], input[type="email"], input[type="tel"] {
-      width: 95%; border-radius: 8px; font-size: 1em; margin-bottom: 0.5em; padding: 0.5em; border: 1px solid #333; background: #181818; color: #fff; box-sizing: border-box;
+    body { background: #000; color: #fff; font-family: sans-serif; margin: 0; }
+    .container { max-width: 900px; margin: 40px auto; padding: 2em 1em; }
+    h2 { text-align: center; }
+    .preview-area { display: flex; flex-direction: column; align-items: center; margin-bottom: 2em; }
+    #tumbler-canvas { 
+      background: #000; 
+      display: block; 
+      margin: 0 auto; 
+      border-radius: 14px; 
+      box-shadow: 0 4px 20px #222a; 
+      cursor: grab; 
+      touch-action: none;
     }
-    textarea::placeholder, input::placeholder { color: #aaa; }
-    .preview-controls { display: flex; justify-content: center; align-items: flex-start; gap: 2em; margin-bottom: 1.5em; }
-    .preview-area { display: flex; flex-direction: column; align-items: center; }
-    .control-area { display: flex; flex-direction: column; align-items: center; gap: 0.4em; margin-top: 0.5em; }
-    .controls { display: flex; flex-direction: column; align-items: center; gap: 0.4em; }
-    .ctrl-row { display: flex; justify-content: center; gap: 0.6em; margin-bottom: 3px; }
-    .ctrl-row:last-child { margin-bottom: 0; }
-    button.ctrl-btn { font-size: 1.6em; width: 2.7em; height: 2.7em; border-radius: 8px; border: 1px solid #444; background: #181818; color: #fff; cursor: pointer; transition: background 0.2s; }
-    button.ctrl-btn:active { background: #282828; }
-    button.reset-btn { font-size: 1.1em; margin-top: 0.6em; padding: 0.5em 1.3em; border-radius: 8px; background: #181818; color: #fff; border: 1px solid #444; cursor: pointer; }
-    button.reset-btn:active { background: #282828; }
-    .file-upload { margin: 1em 0 0.5em 0; display: flex; flex-direction: column; align-items: center; }
-    .file-upload label { font-weight: bold; font-size: 1rem; cursor: pointer; color: #fff; }
-    .file-upload input[type="file"] { margin-left: 8px; }
-    #save-btn { margin: 0.5em 0 1em 0; padding: 0.4em 1.2em; border-radius: 8px; background: #9ec9e8; color: #000; border: 1px solid #bbb; cursor: pointer; }
+    .controls {
+      display: flex; justify-content: center; gap: 0.7em; flex-wrap: wrap; margin: 1.2em 0 0.8em 0;
+    }
+    .ctrl-btn {
+      font-size: 1.2em; width: 2.4em; height: 2.4em;
+      border-radius: 8px; border: 1px solid #444; background: #181818; color: #fff; cursor: pointer;
+    }
+    .ctrl-btn:active { background: #282828; }
+    .reset-btn { font-size: 1em; padding: 0.5em 1.3em; border-radius: 8px; background: #181818; color: #fff; border: 1px solid #444; margin-left: 1em; }
+    .reset-btn:active { background: #282828; }
+    .file-upload { margin: 1.3em 0 0.3em 0; text-align: center; }
+    .file-upload label { font-size: 1em; font-weight: bold; }
+    #save-btn { margin: 0.5em 0 1.3em 0; padding: 0.4em 1.2em; border-radius: 8px; background: #9ec9e8; color: #000; border: 1px solid #bbb; cursor: pointer; }
     #save-btn:active { background: #7fb7da; }
-    canvas { display: block; border-radius: 16px; box-shadow: 0 0 8px #222; background: #eee; cursor: grab; touch-action: none; margin-bottom: 0.7em; width: 390px; height: 600px; max-width: 98vw; }
-    .template-select-area { margin-bottom: 1em; text-align: center; }
-    .back-btn-area { margin-top: 2em; }
-    .back-btn-area button { padding: 0.5em 2em; font-size: 1em; border-radius: 8px; border: 1px solid #666; background: #232323; color: #fff; cursor: pointer; letter-spacing: 0.1em; box-shadow: 0 2px 8px #111a; transition: background 0.2s; }
+    form { background: #101010; border-radius: 12px; box-shadow: 0 0 12px #1118; padding: 1.3em 1em; margin: 2em auto 0 auto; max-width: 430px; }
+    input[type="text"], input[type="email"], input[type="tel"], textarea {
+      width: 97%; font-size: 1em; border-radius: 8px; margin-bottom: 0.8em; padding: 0.6em; border: 1px solid #333; background: #222; color: #fff; box-sizing: border-box;
+    }
+    textarea { resize: vertical; }
+    button[type="button"], button[type="submit"] {
+      font-size: 1em; padding: 0.6em 2.2em; border-radius: 8px; border: none; background: #379; color: #fff; cursor: pointer;
+    }
+    .back-btn-area { margin-top: 2em; text-align: center; }
+    .back-btn-area button { padding: 0.5em 2em; font-size: 1em; border-radius: 8px; border: 1px solid #666; background: #232323; color: #fff; cursor: pointer; }
     .back-btn-area button:active { background: #333; }
-    #confirm-modal { display: none; position: fixed; left: 0; top: 0; width: 100vw; height: 100vh; z-index: 9999; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; }
-    #confirm-modal > div { background: #181818; padding: 2em 1.5em; border-radius: 18px; max-width: 94vw; max-height: 92vh; overflow: auto; text-align: center; color: #fff; box-shadow: 0 4px 24px #000; }
-    #confirm-modal img { max-width:240px; border-radius:10px; box-shadow:0 0 10px #111; }
-    #modal-input-preview { margin:1em auto; text-align:left; max-width:440px; }
-    #confirm-modal button { margin: 0.7em 0.5em 0 0.5em; padding: 0.6em 2.2em; font-size: 1.1em; border-radius: 8px; border: none; cursor: pointer; background: #379; color: #fff; }
-    #confirm-modal button#cancel-btn { background: #444; }
+    .template-select-area { margin-bottom: 1.1em; text-align: center; }
+    .note { font-size: 0.91em; color: #ccc; margin: 20px 0 0 0; text-align: center;}
     @media (max-width: 700px) {
       .container { max-width: 99vw; padding: 1em 0.2em; }
-      .preview-controls { flex-direction: column; gap: 1em; align-items: center; margin-bottom: 1em; }
-      canvas { width: 98vw; max-width: 98vw; height: auto !important; aspect-ratio: 13/20; }
-      .control-area, .controls, .preview-area { width: 100%; align-items: center; }
-      #confirm-modal > div { padding: 1em 0.3em; }
+      form { max-width: 99vw; padding: 1em 0.3em; }
     }
   </style>
 </head>
@@ -58,34 +62,24 @@
         <option value="/product-harmolese/template/template_2.png">タンブラーB</option>
       </select>
     </div>
-    <div class="preview-controls">
-      <div class="preview-area">
-        <canvas id="tumbler-canvas" width="390" height="600"></canvas>
+    <div class="preview-area">
+      <canvas id="tumbler-canvas"></canvas>
+      <div class="controls">
+        <button class="ctrl-btn" id="move-up" title="上へ">↑</button>
+        <button class="ctrl-btn" id="move-down" title="下へ">↓</button>
+        <button class="ctrl-btn" id="move-left" title="左へ">←</button>
+        <button class="ctrl-btn" id="move-right" title="右へ">→</button>
+        <button class="ctrl-btn" id="zoom-in" title="拡大">＋</button>
+        <button class="ctrl-btn" id="zoom-out" title="縮小">－</button>
+        <button class="reset-btn" id="reset-btn" title="リセット">リセット</button>
       </div>
-      <div class="control-area">
-        <div class="controls">
-          <div class="ctrl-row">
-            <button class="ctrl-btn" id="move-up" title="上へ">↑</button>
-          </div>
-          <div class="ctrl-row">
-            <button class="ctrl-btn" id="move-left" title="左へ">←</button>
-            <button class="ctrl-btn" id="zoom-in" title="拡大">＋</button>
-            <button class="ctrl-btn" id="zoom-out" title="縮小">－</button>
-            <button class="ctrl-btn" id="move-right" title="右へ">→</button>
-          </div>
-          <div class="ctrl-row">
-            <button class="ctrl-btn" id="move-down" title="下へ">↓</button>
-          </div>
-          <button class="reset-btn" id="reset-btn" title="リセット">リセット</button>
-        </div>
-        <div class="file-upload">
-          <label>
-            レイアウト画像を選択　
-            <input type="file" id="image-upload" accept="image/*">
-          </label>
-        </div>
-        <button id="save-btn" title="プレビュー画像を保存">画像を保存</button>
+      <div class="file-upload">
+        <label>
+          レイアウト画像を選択　
+          <input type="file" id="image-upload" accept="image/*">
+        </label>
       </div>
+      <button id="save-btn" title="プレビュー画像を保存">画像を保存</button>
     </div>
     <form id="contact-form" action="https://formspree.io/f/mvgrnnpp" method="POST">
       <input type="text" name="name" placeholder="氏名" required>
@@ -95,7 +89,7 @@
       <textarea id="bikou" name="message" rows="3" placeholder="備考欄：ご要望や連絡先等" required></textarea>
       <input type="hidden" name="_subject" value="タンブラー彫刻">
       <input type="hidden" name="_replyto" value="ryuji.hirashiki@gmail.com">
-      <button type="button" class="reset-btn" style="background:#379;color:#fff;" id="confirm-btn">完了</button>
+      <button type="submit" class="reset-btn" style="background:#379;color:#fff;">完了</button>
     </form>
     <div class="back-btn-area">
       <a href="index.html">
@@ -105,148 +99,82 @@
     <div class="note">
       ※画像の自動添付メール送信は無料ではできません。<br>
       ※「画像を保存」でプレビュー画像を保存→ご自身でメール添付してください。<br>
-      ※画像はドラッグで移動、ホイールで拡大縮小、上下左右・拡大縮小ボタンでも微調整できます。<br>
-      ※「完了」ボタンで備考欄の内容のみ送信されます。
-    </div>
-    <div id="confirm-modal">
-      <div>
-        <h3>内容のご確認</h3>
-        <div id="modal-canvas-preview" style="margin:1em auto;"></div>
-        <div id="modal-input-preview"></div>
-        <button id="send-btn">送信</button>
-        <button id="cancel-btn">戻る</button>
-      </div>
+      ※画像はドラッグで移動、ホイールで拡大縮小、ボタンでも微調整できます。<br>
+      ※レイアウト画像の移動・拡大縮小はテンプレート画像の範囲内のみです。
     </div>
   </div>
   <script>
+    // --- テンプレート画像読込 & canvas自動リサイズ ---
     const templateSelect = document.getElementById('template-select');
-    let tumblerImgSrc = templateSelect.value;
-    const canvas = document.getElementById("tumbler-canvas");
-    const ctx = canvas.getContext("2d");
-    const MOVE_STEP = 15;
-    const SCALE_STEP = 0.08;
+    const canvas = document.getElementById('tumbler-canvas');
+    const ctx = canvas.getContext('2d');
 
-    let tumblerImg = new Image();
-    let tDraw = { x: 0, y: 0, w: 0, h: 0 };
-
+    let templateImg = new Image();
     let userImg = null;
     let userPos = { x: 0, y: 0, scale: 1 };
     let defaultPos = { x: 0, y: 0, scale: 1 };
+    let templateW = 390, templateH = 600; // デフォルト
 
-    // 画像の上下余白（白or透明）を自動トリミング
-    function trimImageVertically(src, callback) {
-      let img = new Image();
-      img.crossOrigin = "anonymous";
-      img.onload = () => {
-        let tmpCanvas = document.createElement('canvas');
-        tmpCanvas.width = img.width;
-        tmpCanvas.height = img.height;
-        let tmpCtx = tmpCanvas.getContext('2d');
-        tmpCtx.drawImage(img, 0, 0);
-
-        let imageData = tmpCtx.getImageData(0, 0, img.width, img.height);
-        let data = imageData.data;
-
-        // 上端検出
-        let top = 0, bottom = img.height - 1;
-        function isRowEmpty(y) {
-          for (let x = 0; x < img.width; x++) {
-            let i = (y * img.width + x) * 4;
-            let r = data[i], g = data[i+1], b = data[i+2], a = data[i+3];
-            if (!(a < 10 || (r > 245 && g > 245 && b > 245))) return false;
-          }
-          return true;
-        }
-        while (top < img.height && isRowEmpty(top)) top++;
-        while (bottom > top && isRowEmpty(bottom)) bottom--;
-
-        // トリミングする高さ
-        let trimHeight = bottom - top + 1;
-
-        // 新しいcanvasに本体部分だけdraw
-        let outCanvas = document.createElement('canvas');
-        outCanvas.width = img.width;
-        outCanvas.height = trimHeight;
-        let outCtx = outCanvas.getContext('2d');
-        outCtx.drawImage(img, 0, top, img.width, trimHeight, 0, 0, img.width, trimHeight);
-
-        // 新しいImageとして返す
-        let trimmedImg = new Image();
-        trimmedImg.onload = () => { callback(trimmedImg, img.width, trimHeight); };
-        trimmedImg.src = outCanvas.toDataURL();
-      };
-      img.src = src + '?_=' + new Date().getTime();
+    function setCanvasSizeByImage(img) {
+      templateW = img.naturalWidth || img.width;
+      templateH = img.naturalHeight || img.height;
+      canvas.width = templateW;
+      canvas.height = templateH;
+      canvas.style.width = templateW + 'px';
+      canvas.style.height = templateH + 'px';
     }
-
-    function calcTumblerDrawInfo(trimW, trimH) {
-      const cW = canvas.width, cH = canvas.height;
-      const scale = Math.min(cW / trimW, cH / trimH);
-      const drawW = trimW * scale;
-      const drawH = trimH * scale;
-      const offsetX = (cW - drawW) / 2;
-      const offsetY = (cH - drawH) / 2;
-      tDraw = { x: offsetX, y: offsetY, w: drawW, h: drawH };
-    }
-    function resetUserPos() {
-      if (!userImg) return;
-      const imgW = 240;
-      const imgH = 240 * (userImg.height / userImg.width);
-      const x = tDraw.x + (tDraw.w - imgW) / 2;
-      const y = tDraw.y + (tDraw.h - imgH) / 2 + 45;
-      userPos = { x: x, y: y, scale: 1 };
-      defaultPos = { ...userPos };
-    }
-
-    let trimInfo = { w: 1, h: 1 }; // トリミング後の画像サイズ
 
     function drawAll() {
-      ctx.fillStyle = "#000";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      if (!tumblerImg.complete || tumblerImg.naturalWidth === 0) return;
-      calcTumblerDrawInfo(trimInfo.w, trimInfo.h);
-      ctx.drawImage(tumblerImg, tDraw.x, tDraw.y, tDraw.w, tDraw.h);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      // テンプレ画像
+      ctx.drawImage(templateImg, 0, 0, templateW, templateH);
+      // ユーザー画像
       if (userImg) {
-        const baseW = 240 * userPos.scale;
-        const baseH = (240 * (userImg.height / userImg.width)) * userPos.scale;
+        const imgW = userImg.width * userPos.scale;
+        const imgH = userImg.height * userPos.scale;
         ctx.globalAlpha = 0.65;
-        ctx.drawImage(userImg, userPos.x, userPos.y, baseW, baseH);
+        ctx.drawImage(userImg, userPos.x, userPos.y, imgW, imgH);
         ctx.globalAlpha = 1.0;
       }
     }
 
-    function loadTumblerImage() {
-      trimImageVertically(tumblerImgSrc, function(trimmedImg, w, h) {
-        tumblerImg = trimmedImg;
-        trimInfo.w = w;
-        trimInfo.h = h;
-        drawAll();
-      });
+    function limitUserPos() {
+      if (!userImg) return;
+      const imgW = userImg.width * userPos.scale;
+      const imgH = userImg.height * userPos.scale;
+      // X方向
+      if (userPos.x < 0) userPos.x = 0;
+      if (userPos.x + imgW > templateW) userPos.x = templateW - imgW;
+      // Y方向
+      if (userPos.y < 0) userPos.y = 0;
+      if (userPos.y + imgH > templateH) userPos.y = templateH - imgH;
     }
 
-    // テンプレ切替時
-    templateSelect.onchange = function() {
-      tumblerImgSrc = templateSelect.value;
-      loadTumblerImage();
-    };
+    // テンプレ画像ロード・canvasサイズセット
+    function loadTemplate(src) {
+      templateImg = new Image();
+      templateImg.onload = () => {
+        setCanvasSizeByImage(templateImg);
+        if (userImg) resetUserPos();
+        drawAll();
+      };
+      templateImg.src = src + '?_=' + Date.now();
+    }
+    templateSelect.addEventListener('change', () => {
+      loadTemplate(templateSelect.value);
+    });
 
-    // 最初の表示
-    loadTumblerImage();
+    // 初回
+    loadTemplate(templateSelect.value);
 
-    document.getElementById('save-btn').onclick = function() {
-      const a = document.createElement('a');
-      a.href = canvas.toDataURL("image/png");
-      a.download = "tumbler_layout.png";
-      a.click();
-    };
+    // ユーザー画像アップロード
     document.getElementById('image-upload').addEventListener('change', function(e) {
       const file = e.target.files[0];
       if (!file) return;
       const reader = new FileReader();
       reader.onload = function(evt) {
         userImg = new Image();
-        userImg.onload = () => {
-          calcTumblerDrawInfo(trimInfo.w, trimInfo.h);
+        userImg.onload = function() {
           resetUserPos();
           drawAll();
         };
@@ -254,105 +182,92 @@
       };
       reader.readAsDataURL(file);
     });
-    document.getElementById('move-up').onclick = () => { userPos.y -= MOVE_STEP; drawAll(); }
-    document.getElementById('move-down').onclick = () => { userPos.y += MOVE_STEP; drawAll(); }
-    document.getElementById('move-left').onclick = () => { userPos.x -= MOVE_STEP; drawAll(); }
-    document.getElementById('move-right').onclick = () => { userPos.x += MOVE_STEP; drawAll(); }
-    document.getElementById('zoom-in').onclick = () => { userPos.scale *= (1 + SCALE_STEP); drawAll(); }
+
+    function resetUserPos() {
+      if (!userImg) return;
+      // ちょっと小さめ中央
+      const scale = Math.min(templateW / userImg.width, templateH / userImg.height) * 0.65;
+      const imgW = userImg.width * scale;
+      const imgH = userImg.height * scale;
+      userPos = {
+        x: (templateW - imgW) / 2,
+        y: (templateH - imgH) / 2,
+        scale: scale
+      };
+      defaultPos = { ...userPos };
+      limitUserPos();
+    }
+
+    // 操作ボタン
+    const MOVE_STEP = 18;
+    const SCALE_STEP = 0.08;
+    document.getElementById('move-up').onclick = () => { userPos.y -= MOVE_STEP; limitUserPos(); drawAll(); }
+    document.getElementById('move-down').onclick = () => { userPos.y += MOVE_STEP; limitUserPos(); drawAll(); }
+    document.getElementById('move-left').onclick = () => { userPos.x -= MOVE_STEP; limitUserPos(); drawAll(); }
+    document.getElementById('move-right').onclick = () => { userPos.x += MOVE_STEP; limitUserPos(); drawAll(); }
+    document.getElementById('zoom-in').onclick = () => {
+      userPos.scale *= (1 + SCALE_STEP);
+      limitUserPos();
+      drawAll();
+    }
     document.getElementById('zoom-out').onclick = () => {
       userPos.scale /= (1 + SCALE_STEP);
-      if(userPos.scale < 0.2) userPos.scale = 0.2;
+      if (userPos.scale < 0.1) userPos.scale = 0.1;
+      limitUserPos();
       drawAll();
     }
     document.getElementById('reset-btn').onclick = () => { userPos = { ...defaultPos }; drawAll(); }
-    let dragging = false;
-    let dragOffset = { x: 0, y: 0 };
+
+    // マウスドラッグ対応
+    let dragging = false, dragOffset = {x:0, y:0};
     canvas.addEventListener('mousedown', function(e) {
       if (!userImg) return;
       const rect = canvas.getBoundingClientRect();
-      const mouseX = e.clientX - rect.left;
-      const mouseY = e.clientY - rect.top;
-      const baseW = 240 * userPos.scale;
-      const baseH = (240 * (userImg.height / userImg.width)) * userPos.scale;
+      const mx = e.clientX - rect.left;
+      const my = e.clientY - rect.top;
+      const imgW = userImg.width * userPos.scale;
+      const imgH = userImg.height * userPos.scale;
       if (
-        mouseX >= userPos.x && mouseX <= userPos.x + baseW &&
-        mouseY >= userPos.y && mouseY <= userPos.y + baseH
+        mx >= userPos.x && mx <= userPos.x + imgW &&
+        my >= userPos.y && my <= userPos.y + imgH
       ) {
         dragging = true;
-        dragOffset.x = mouseX - userPos.x;
-        dragOffset.y = mouseY - userPos.y;
+        dragOffset.x = mx - userPos.x;
+        dragOffset.y = my - userPos.y;
         canvas.style.cursor = "grabbing";
       }
     });
     canvas.addEventListener('mousemove', function(e) {
       if (!userImg || !dragging) return;
       const rect = canvas.getBoundingClientRect();
-      const mouseX = e.clientX - rect.left;
-      const mouseY = e.clientY - rect.top;
-      userPos.x = mouseX - dragOffset.x;
-      userPos.y = mouseY - dragOffset.y;
+      const mx = e.clientX - rect.left;
+      const my = e.clientY - rect.top;
+      userPos.x = mx - dragOffset.x;
+      userPos.y = my - dragOffset.y;
+      limitUserPos();
       drawAll();
     });
     window.addEventListener('mouseup', function() {
       dragging = false;
       canvas.style.cursor = "grab";
     });
+    // スクロールで拡大縮小
     canvas.addEventListener('wheel', function(e) {
       if (!userImg) return;
       e.preventDefault();
       let newScale = userPos.scale * (e.deltaY < 0 ? 1.08 : 1 / 1.08);
-      if (newScale < 0.2) newScale = 0.2;
-      if (newScale > 6.0) newScale = 6.0;
-      const baseW = 240 * userPos.scale;
-      const baseH = (240 * (userImg.height / userImg.width)) * userPos.scale;
-      const centerX = userPos.x + baseW / 2;
-      const centerY = userPos.y + baseH / 2;
-      const newBaseW = 240 * newScale;
-      const newBaseH = (240 * (userImg.height / userImg.width)) * newScale;
-      userPos.x = centerX - newBaseW / 2;
-      userPos.y = centerY - newBaseH / 2;
+      if (newScale < 0.1) newScale = 0.1;
       userPos.scale = newScale;
+      limitUserPos();
       drawAll();
     });
 
-    // --- 確認モーダル処理 ---
-    const confirmModal = document.getElementById('confirm-modal');
-    const confirmBtn = document.getElementById('confirm-btn');
-    const sendBtn = document.getElementById('send-btn');
-    const cancelBtn = document.getElementById('cancel-btn');
-    const contactForm = document.getElementById('contact-form');
-    const modalInputPreview = document.getElementById('modal-input-preview');
-    const modalCanvasPreview = document.getElementById('modal-canvas-preview');
-
-    confirmBtn.onclick = function() {
-      // 入力内容取得
-      const name = contactForm.elements['name'].value;
-      const tel = contactForm.elements['tel'].value;
-      const email = contactForm.elements['email'].value;
-      const address = contactForm.elements['address'].value;
-      const bikou = contactForm.elements['message'].value;
-
-      if (!name || !tel || !email || !address || !bikou) {
-        alert("すべての項目を入力してください。");
-        return;
-      }
-      const dataUrl = canvas.toDataURL("image/png");
-      modalCanvasPreview.innerHTML = `<img src="${dataUrl}" alt="プレビュー画像">`;
-      modalInputPreview.innerHTML = `
-        <div><b>氏名：</b>${name}</div>
-        <div><b>電話番号：</b>${tel}</div>
-        <div><b>メール：</b>${email}</div>
-        <div><b>お届け先：</b>${address}</div>
-        <div><b>備考：</b>${bikou.replace(/\n/g,"<br>")}</div>
-      `;
-      confirmModal.style.display = "flex";
-    };
-    cancelBtn.onclick = function() {
-      confirmModal.style.display = "none";
-    };
-    sendBtn.onclick = function() {
-      confirmModal.style.display = "none";
-      contactForm.submit();
+    // 保存
+    document.getElementById('save-btn').onclick = function() {
+      const a = document.createElement('a');
+      a.href = canvas.toDataURL("image/png");
+      a.download = "tumbler_layout.png";
+      a.click();
     };
   </script>
 </body>
