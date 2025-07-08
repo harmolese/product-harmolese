@@ -227,6 +227,24 @@
         min-width: 40px;
       }
     }
+    /* 追加：スマホ用タイトル調整 */
+    @media (max-width: 600px) {
+      header h1 {
+        font-size: 2.1rem !important;
+        top: 1.3rem !important;
+        padding: 0 .5rem !important;
+        word-break: keep-all;
+      }
+      header h1 span:first-child {
+        font-size: 2.2rem !important;
+        letter-spacing: 0.04em !important;
+        padding-bottom: 0.1rem !important;
+        border-bottom-width: 1.5px !important;
+      }
+      header h1 span:last-child {
+        font-size: 0.92rem !important;
+      }
+    }
   </style>
 </head>
 <body>
